@@ -6,6 +6,7 @@ namespace Rehawk.Kite
     {
         private static GUIStyle topCenterLabel;
         private static GUIStyle leftLabel;
+        private static GUIStyle rightLabel;
         private static GUIStyle toolbarSearchTextField;
         private static GUIStyle toolbarSearchCancelButton;
         private static GUIStyle shadowedBackground;
@@ -104,12 +105,29 @@ namespace Rehawk.Kite
                 {
                     leftLabel = new GUIStyle(GUI.skin.label);
                     leftLabel.richText = true;
-                    leftLabel.fontSize = 11;
+                    leftLabel.fontSize = 10;
                     leftLabel.alignment = TextAnchor.MiddleLeft;
-                    leftLabel.padding.right = 6;
+                    leftLabel.padding.left = 10;
                 }
 
                 return leftLabel;
+            }
+        }
+
+        public static GUIStyle RightLabel
+        {
+            get
+            {
+                if (rightLabel == null)
+                {
+                    rightLabel = new GUIStyle(GUI.skin.label);
+                    rightLabel.richText = true;
+                    rightLabel.fontSize = 10;
+                    rightLabel.alignment = TextAnchor.MiddleRight;
+                    rightLabel.padding.right = 10;
+                }
+
+                return rightLabel;
             }
         }
 

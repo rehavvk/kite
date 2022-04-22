@@ -37,7 +37,7 @@ namespace Rehawk.Kite
 
         public void Add()
         {
-            GenericMenuBrowser.ShowAsync(NodeListControl.LastMouseDownPosition, "Add Node", typeof(NodeBase), () =>
+            GenericMenuBrowser.ShowAsync(NodeListControl.lastMouseDownPosition, "Add Node", typeof(NodeBase), () =>
             {
                 return GetTypeSelectionMenu(typeof(NodeBase), type =>
                 {
@@ -48,7 +48,7 @@ namespace Rehawk.Kite
 
         public void Insert(int index)
         {
-            GenericMenuBrowser.ShowAsync(NodeListControl.LastMouseDownPosition, "Insert Node", typeof(NodeBase), () =>
+            GenericMenuBrowser.ShowAsync(NodeListControl.lastMouseDownPosition, "Insert Node", typeof(NodeBase), () =>
             {
                 return GetTypeSelectionMenu(typeof(NodeBase), type =>
                 {

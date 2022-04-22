@@ -7,35 +7,26 @@ namespace Rehawk.Kite.NodeList
 {
     public class NodeListControl
     {
-        #region Custom Styles
-
-        /// <summary>
-        /// Style for right-aligned label for element number prefix.
-        /// </summary>
-        private static GUIStyle s_RightAlignedLabelStyle;
-
-        #endregion
-
         #region Utility
 
-        private static readonly int s_ReorderableListControlHint = "_ReorderableListControl_".GetHashCode();
+        private static readonly int reorderableListControlHint = "_ReorderableListControl_".GetHashCode();
 
         private static int GetReorderableListControlID()
         {
-            return GUIUtility.GetControlID(s_ReorderableListControlHint, FocusType.Passive);
+            return GUIUtility.GetControlID(reorderableListControlHint, FocusType.Passive);
         }
 
         #endregion
 
-        private static float s_AnchorMouseOffset;
+        private static float anchorMouseOffset;
 
-        private static int s_AnchorIndex = -1;
+        private static int anchorIndex = -1;
 
-        private static int s_TargetIndex = -1;
+        private static int targetIndex = -1;
 
-        private static int s_AutoFocusControlID = 0;
+        private static int autoFocusControlID = 0;
 
-        private static int s_AutoFocusIndex = -1;
+        private static int autoFocusIndex = -1;
 
         #region Events
 
@@ -51,22 +42,22 @@ namespace Rehawk.Kite.NodeList
 
         #region Control State
 
-        private int _controlID;
+        private int controlID;
 
-        private Rect _visibleRect;
+        private Rect visibleRect;
 
-        private float _indexLabelWidth;
+        private float indexLabelWidth;
 
-        private bool _tracking;
+        private bool tracking;
 
-        private int _newSizeInput;
+        private int newSizeInput;
 
         private void PrepareState(int controlID)
         {
-            _controlID = controlID;
-            _visibleRect = GUIHelper.VisibleRect();
+            this.controlID = controlID;
+            visibleRect = GUIHelper.VisibleRect();
 
-            _tracking = IsTrackingControl(controlID);
+            tracking = IsTrackingControl(controlID);
         }
 
         private static int CountDigits(int number)
@@ -78,38 +69,40 @@ namespace Rehawk.Kite.NodeList
 
         #region Event Handling
 
-        private static int s_SimulateMouseDragControlID;
+        private static int simulateMouseDragControlID;
 
-        private static bool s_TrackingCancelBlockContext;
+        private static bool trackingCancelBlockContext;
 
         private static void BeginTrackingReorderDrag(int controlID, int itemIndex)
         {
             GUIUtility.hotControl = controlID;
             GUIUtility.keyboardControl = 0;
-            s_AnchorIndex = itemIndex;
-            s_TargetIndex = itemIndex;
-            s_TrackingCancelBlockContext = false;
+            anchorIndex = itemIndex;
+            targetIndex = itemIndex;
+            trackingCancelBlockContext = false;
         }
 
         private static void StopTrackingReorderDrag()
         {
             GUIUtility.hotControl = 0;
-            s_AnchorIndex = -1;
-            s_TargetIndex = -1;
+            anchorIndex = -1;
+            targetIndex = -1;
         }
 
         private static bool IsTrackingControl(int controlID)
         {
-            return !s_TrackingCancelBlockContext && GUIUtility.hotControl == controlID;
+            return !trackingCancelBlockContext && GUIUtility.hotControl == controlID;
         }
 
         private void AcceptReorderDrag(NodeListAdaptor adaptor)
         {
             try
             {
-                s_TargetIndex = Mathf.Clamp(s_TargetIndex, 0, adaptor.Count + 1);
-                if (s_TargetIndex != s_AnchorIndex && s_TargetIndex != s_AnchorIndex + 1)
-                    MoveItem(adaptor, s_AnchorIndex, s_TargetIndex);
+                targetIndex = Mathf.Clamp(targetIndex, 0, adaptor.Count + 1);
+                if (targetIndex != anchorIndex && targetIndex != anchorIndex + 1)
+                {
+                    MoveItem(adaptor, anchorIndex, targetIndex);
+                }
             }
             finally
             {
@@ -117,9 +110,9 @@ namespace Rehawk.Kite.NodeList
             }
         }
 
-        private static Rect s_DragItemPosition;
+        private static Rect dragItemPosition;
 
-        private static Rect s_RemoveButtonPosition;
+        private static Rect removeButtonPosition;
 
         private void DrawListItem(Rect position, NodeListAdaptor adaptor, int itemIndex)
         {
@@ -136,14 +129,14 @@ namespace Rehawk.Kite.NodeList
             boxPosition.x += (40 * indent) + leftMargin;
             boxPosition.width -= (40 * indent) + leftMargin;
 
-            if (_indexLabelWidth != 0)
+            if (indexLabelWidth != 0)
             {
-                boxPosition.x += _indexLabelWidth;
-                boxPosition.width -= _indexLabelWidth;
+                boxPosition.x += indexLabelWidth;
+                boxPosition.width -= indexLabelWidth;
             }
 
             bool isRepainting = Event.current.type == EventType.Repaint;
-            bool isVisible = (position.y < _visibleRect.yMax && position.yMax > _visibleRect.y);
+            bool isVisible = (position.y < visibleRect.yMax && position.yMax > visibleRect.y);
 
             Rect indexPosition = position;
             Rect itemContentPosition = boxPosition;
@@ -152,19 +145,19 @@ namespace Rehawk.Kite.NodeList
 
             if (isRepainting && isVisible)
             {
-                s_RightAlignedLabelStyle.Draw(new Rect(indexPosition.x, indexPosition.y, _indexLabelWidth, indexPosition.height), itemIndex.ToString(), false, false, false, false);
+                Styles.RightLabel.Draw(new Rect(indexPosition.x, indexPosition.y, indexLabelWidth, indexPosition.height), itemIndex.ToString(), false, false, false, false);
                 Styles.NodeBackground.Draw(boxPosition, GUIContent.none, false, false, false, false);
             }
 
-            if (s_AutoFocusIndex == itemIndex)
-                GUI.SetNextControlName("AutoFocus_" + _controlID + "_" + itemIndex);
+            if (autoFocusIndex == itemIndex)
+                GUI.SetNextControlName("AutoFocus_" + controlID + "_" + itemIndex);
 
             adaptor.DrawItem(itemContentPosition, itemIndex);
 
             if (EditorGUI.EndChangeCheck())
                 NodeListGUI.IndexOfChangedItem = itemIndex;
 
-            if (Event.current.GetTypeForControl(_controlID) == EventType.ContextClick && boxPosition.Contains(Event.current.mousePosition))
+            if (Event.current.GetTypeForControl(controlID) == EventType.ContextClick && boxPosition.Contains(Event.current.mousePosition))
             {
                 ShowContextMenu(itemIndex, adaptor);
                 Event.current.Use();
@@ -173,52 +166,52 @@ namespace Rehawk.Kite.NodeList
 
         private void DrawFloatingListItem(NodeListAdaptor adaptor, float targetSlotPosition)
         {
-            DrawListItem(s_DragItemPosition, adaptor, s_AnchorIndex);
+            DrawListItem(dragItemPosition, adaptor, anchorIndex);
         }
 
         private void DrawListContainerAndItems(Rect position, NodeListAdaptor adaptor)
         {
-            EventType eventType = Event.current.GetTypeForControl(_controlID);
+            EventType eventType = Event.current.GetTypeForControl(controlID);
             Vector2 mousePosition = Event.current.mousePosition;
 
-            int newTargetIndex = s_TargetIndex;
+            int newTargetIndex = targetIndex;
 
             float firstItemY = position.y + Styles.Container.padding.top;
-            float dragItemMaxY = (position.yMax - Styles.Container.padding.bottom) - s_DragItemPosition.height + 1;
+            float dragItemMaxY = (position.yMax - Styles.Container.padding.bottom) - dragItemPosition.height + 1;
 
             bool isMouseDragEvent = eventType == EventType.MouseDrag;
-            if (s_SimulateMouseDragControlID == _controlID && eventType == EventType.Repaint)
+            if (simulateMouseDragControlID == controlID && eventType == EventType.Repaint)
             {
-                s_SimulateMouseDragControlID = 0;
+                simulateMouseDragControlID = 0;
                 isMouseDragEvent = true;
             }
 
-            if (isMouseDragEvent && _tracking)
+            if (isMouseDragEvent && tracking)
             {
                 if (mousePosition.y < firstItemY)
                     newTargetIndex = 0;
                 else if (mousePosition.y >= position.yMax)
                     newTargetIndex = adaptor.Count;
 
-                s_DragItemPosition.y = Mathf.Clamp(mousePosition.y + s_AnchorMouseOffset, firstItemY, dragItemMaxY);
+                dragItemPosition.y = Mathf.Clamp(mousePosition.y + anchorMouseOffset, firstItemY, dragItemMaxY);
             }
 
             switch (eventType)
             {
                 case EventType.MouseDown:
                     
-                    if (_tracking)
+                    if (tracking)
                     {
-                        s_TrackingCancelBlockContext = true;
+                        trackingCancelBlockContext = true;
                         Event.current.Use();
                     }
 
                     break;
 
                 case EventType.MouseUp:
-                    if (_controlID == GUIUtility.hotControl)
+                    if (controlID == GUIUtility.hotControl)
                     {
-                        if (!s_TrackingCancelBlockContext)
+                        if (!trackingCancelBlockContext)
                             AcceptReorderDrag(adaptor);
                         else
                             StopTrackingReorderDrag();
@@ -228,7 +221,7 @@ namespace Rehawk.Kite.NodeList
                     break;
 
                 case EventType.KeyDown:
-                    if (_tracking && Event.current.keyCode == KeyCode.Escape)
+                    if (tracking && Event.current.keyCode == KeyCode.Escape)
                     {
                         StopTrackingReorderDrag();
                         Event.current.Use();
@@ -237,18 +230,18 @@ namespace Rehawk.Kite.NodeList
                     break;
 
                 case EventType.ExecuteCommand:
-                    if (s_ContextControlID == _controlID)
+                    if (contextControlID == controlID)
                     {
-                        int itemIndex = s_ContextItemIndex;
+                        int itemIndex = contextItemIndex;
                         try
                         {
-                            DoCommand(s_ContextCommandName, itemIndex, adaptor);
+                            DoCommand(contextCommandName, itemIndex, adaptor);
                             Event.current.Use();
                         }
                         finally
                         {
-                            s_ContextControlID = 0;
-                            s_ContextItemIndex = 0;
+                            contextControlID = 0;
+                            contextItemIndex = 0;
                         }
                     }
 
@@ -276,15 +269,15 @@ namespace Rehawk.Kite.NodeList
 
                 lastMidPoint = itemPosition.y - lastHeight / 2f;
 
-                if (_tracking)
+                if (tracking)
                 {
-                    if (i == s_TargetIndex)
+                    if (i == targetIndex)
                     {
                         targetSlotPosition = itemPosition.y;
-                        itemPosition.y += s_DragItemPosition.height;
+                        itemPosition.y += dragItemPosition.height;
                     }
 
-                    if (i == s_AnchorIndex)
+                    if (i == anchorIndex)
                         continue;
 
                     itemPosition.height = adaptor.GetItemHeight(i) + 4;
@@ -296,18 +289,18 @@ namespace Rehawk.Kite.NodeList
                     lastHeight = itemPosition.height;
                 }
 
-                if (_tracking && isMouseDragEvent)
+                if (tracking && isMouseDragEvent)
                 {
                     float midpoint = itemPosition.y + itemPosition.height / 2f;
 
-                    if (s_TargetIndex < i)
+                    if (targetIndex < i)
                     {
-                        if (s_DragItemPosition.yMax > lastMidPoint && s_DragItemPosition.yMax < midpoint)
+                        if (dragItemPosition.yMax > lastMidPoint && dragItemPosition.yMax < midpoint)
                             newTargetIndex = i;
                     }
-                    else if (s_TargetIndex > i)
+                    else if (targetIndex > i)
                     {
-                        if (s_DragItemPosition.y > lastMidPoint && s_DragItemPosition.y < midpoint)
+                        if (dragItemPosition.y > lastMidPoint && dragItemPosition.y < midpoint)
                             newTargetIndex = i;
                     }
                 }
@@ -338,11 +331,11 @@ namespace Rehawk.Kite.NodeList
 
                                     if (adaptor.CanDrag(i))
                                     {
-                                        s_DragItemPosition = itemPosition;
+                                        dragItemPosition = itemPosition;
 
-                                        BeginTrackingReorderDrag(_controlID, i);
-                                        s_AnchorMouseOffset = itemPosition.y - mousePosition.y;
-                                        s_TargetIndex = i;
+                                        BeginTrackingReorderDrag(controlID, i);
+                                        anchorMouseOffset = itemPosition.y - mousePosition.y;
+                                        targetIndex = i;
                                     }
 
                                     Event.current.Use();
@@ -356,14 +349,14 @@ namespace Rehawk.Kite.NodeList
 
             lastMidPoint = position.yMax - lastHeight / 2f;
 
-            if (IsTrackingControl(_controlID))
+            if (IsTrackingControl(controlID))
             {
                 if (isMouseDragEvent)
                 {
-                    if (s_DragItemPosition.yMax >= lastMidPoint)
+                    if (dragItemPosition.yMax >= lastMidPoint)
                         newTargetIndex = count;
 
-                    s_TargetIndex = newTargetIndex;
+                    targetIndex = newTargetIndex;
 
                     if (eventType == EventType.MouseDrag)
                         Event.current.Use();
@@ -374,7 +367,7 @@ namespace Rehawk.Kite.NodeList
 
             GUIUtility.GetControlID(FocusType.Keyboard);
 
-            if (isMouseDragEvent && IsTrackingControl(_controlID))
+            if (isMouseDragEvent && IsTrackingControl(controlID))
                 AutoScrollTowardsMouse();
         }
 
@@ -403,7 +396,7 @@ namespace Rehawk.Kite.NodeList
                 mousePosition.y = Mathf.Min(mousePosition.y + maximumRangeInPixels, mouseRect.yMax);
                 GUI.ScrollTo(new Rect(mousePosition.x, mousePosition.y, 1, 1));
 
-                s_SimulateMouseDragControlID = _controlID;
+                simulateMouseDragControlID = controlID;
 
                 var focusedWindow = EditorWindow.focusedWindow;
                 if (focusedWindow != null)
@@ -416,15 +409,15 @@ namespace Rehawk.Kite.NodeList
             if (Event.current.type == EventType.Used)
                 return;
 
-            if (s_AutoFocusControlID == _controlID)
+            if (autoFocusControlID == controlID)
             {
-                s_AutoFocusControlID = 0;
-                GUIHelper.FocusTextInControl("AutoFocus_" + _controlID + "_" + s_AutoFocusIndex);
-                s_AutoFocusIndex = -1;
+                autoFocusControlID = 0;
+                GUIHelper.FocusTextInControl("AutoFocus_" + controlID + "_" + autoFocusIndex);
+                autoFocusIndex = -1;
             }
         }
 
-        private static readonly Dictionary<int, float> s_ContainerHeightCache = new Dictionary<int, float>();
+        private static readonly Dictionary<int, float> containerHeightCache = new Dictionary<int, float>();
         
         private Rect GetListRectWithAutoLayout(NodeListAdaptor adaptor)
         {
@@ -434,13 +427,11 @@ namespace Rehawk.Kite.NodeList
             if (Event.current.type == EventType.Layout)
             {
                 totalHeight = CalculateListHeight(adaptor);
-                s_ContainerHeightCache[_controlID] = totalHeight;
+                containerHeightCache[controlID] = totalHeight;
             }
             else
             {
-                totalHeight = s_ContainerHeightCache.ContainsKey(_controlID)
-                    ? s_ContainerHeightCache[_controlID]
-                    : 0;
+                totalHeight = containerHeightCache.ContainsKey(controlID) ? containerHeightCache[controlID] : 0;
             }
 
             return GUILayoutUtility.GetRect(GUIContent.none, Styles.Container, GUILayout.Height(totalHeight));
@@ -450,35 +441,20 @@ namespace Rehawk.Kite.NodeList
         {
             Rect position = GetListRectWithAutoLayout(adaptor);
 
-            // Make room for vertical spacing below footer buttons.
-            position.height -= 10f;
-
             DrawListContainerAndItems(position, adaptor);
 
             CheckForAutoFocusControl();
         }
         
-        private void FixStyles()
-        {
-            if (s_RightAlignedLabelStyle == null)
-            {
-                s_RightAlignedLabelStyle = new GUIStyle(GUI.skin.label);
-                s_RightAlignedLabelStyle.alignment = TextAnchor.MiddleRight;
-                s_RightAlignedLabelStyle.padding.right = 10;
-                s_RightAlignedLabelStyle.fontSize = 10;
-            }
-        }
-
         private void Draw(int controlID, NodeListAdaptor adaptor)
         {
-            FixStyles();
             PrepareState(controlID);
 
-            _indexLabelWidth = CountDigits(adaptor.Count) * 8 + 8;
+            indexLabelWidth = CountDigits(adaptor.Count) * 8 + 8;
 
             if (Event.current.type == EventType.MouseDown)
             {
-                LastMouseDownPosition = Event.current.mousePosition;
+                lastMouseDownPosition = Event.current.mousePosition;
             }
 
             if (adaptor.Count > 0)
@@ -520,19 +496,19 @@ namespace Rehawk.Kite.NodeList
         private static readonly GUIContent CommandRemove = new GUIContent("Remove");
         private static readonly GUIContent CommandClearAll = new GUIContent("Clear All");
 
-        private static int s_ContextControlID;
-        private static int s_ContextItemIndex;
+        private static int contextControlID;
+        private static int contextItemIndex;
 
-        private static string s_ContextCommandName;
+        private static string contextCommandName;
 
-        public static Vector2 LastMouseDownPosition;
+        public static Vector2 lastMouseDownPosition;
 
         private void ShowContextMenu(int itemIndex, NodeListAdaptor adaptor)
         {
             GenericMenu menu = new GenericMenu();
 
-            s_ContextControlID = _controlID;
-            s_ContextItemIndex = itemIndex;
+            contextControlID = controlID;
+            contextItemIndex = itemIndex;
 
             AddItemsToMenu(menu, itemIndex, adaptor);
 
@@ -548,7 +524,7 @@ namespace Rehawk.Kite.NodeList
             if (commandContent == null || string.IsNullOrEmpty(commandContent.text))
                 return;
 
-            s_ContextCommandName = commandContent.text;
+            contextCommandName = commandContent.text;
 
             var e = EditorGUIUtility.CommandEvent("ReorderableListContextCommand");
             EditorWindow.focusedWindow.SendEvent(e);
@@ -643,8 +619,6 @@ namespace Rehawk.Kite.NodeList
 
         private float CalculateListHeight(NodeListAdaptor adaptor)
         {
-            FixStyles();
-
             float totalHeight = Styles.Container.padding.vertical - 1 + 10;
 
             int count = adaptor.Count;
