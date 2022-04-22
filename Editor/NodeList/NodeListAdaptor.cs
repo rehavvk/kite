@@ -115,7 +115,7 @@ namespace Rehawk.Kite
             }
         }
 
-        public void Move(int sourceIndex, int destinationIndex)
+        public void Move(int sourceIndex, int destinationIndex, bool withoutGroup)
         {
             NodeBase node = sequence[sourceIndex];
 
@@ -123,7 +123,7 @@ namespace Rehawk.Kite
             {
                 Undo.RegisterCompleteObjectUndo(sequence, "Move Node");
 
-                processor.DoMove(sequence, node, sourceIndex, destinationIndex);
+                processor.DoMove(sequence, node, sourceIndex, destinationIndex, withoutGroup);
                 
                 SequenceValidator.Validate(sequence);
             

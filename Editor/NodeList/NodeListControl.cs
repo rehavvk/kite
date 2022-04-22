@@ -634,7 +634,7 @@ namespace Rehawk.Kite.NodeList
 
         private void MoveItem(NodeListAdaptor adaptor, int sourceIndex, int destIndex)
         {
-            adaptor.Move(sourceIndex, destIndex);
+            adaptor.Move(sourceIndex, destIndex, Event.current.modifiers == EventModifiers.Alt);
 
             int newIndex = destIndex;
             if (newIndex > sourceIndex)

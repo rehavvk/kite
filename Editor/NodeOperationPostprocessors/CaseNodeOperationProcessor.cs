@@ -23,14 +23,21 @@ namespace Rehawk.Kite
             }
         }
 
-        public override void DoMove(Sequence sequence, NodeBase node, int sourceIndex, int destinationIndex)
+        public override void DoMove(Sequence sequence, NodeBase node, int sourceIndex, int destinationIndex, bool withoutGroup)
         {
-            if (!sequence.TryGetIndexByIndentLevel(sourceIndex + 1, node.IndentLevel, out int endIndex))
+            if (withoutGroup)
             {
-                endIndex = sequence.Count - 1;
+                base.DoMove(sequence, node, sourceIndex, destinationIndex, withoutGroup);
             }
+            else
+            {
+                if (!sequence.TryGetIndexByType<BreakNode>(sourceIndex + 1, node.IndentLevel, out int endIndex))
+                {
+                    endIndex = sequence.Count - 1;
+                }
 
-            MoveRange(sequence, sourceIndex, endIndex - sourceIndex, destinationIndex);
+                MoveRange(sequence, sourceIndex, endIndex - sourceIndex, destinationIndex);
+            }
         }
     }
 }

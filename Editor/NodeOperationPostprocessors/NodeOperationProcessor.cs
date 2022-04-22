@@ -18,7 +18,7 @@
             sequence.RemoveAt(index);
         }
         
-        public virtual void DoMove(Sequence sequence, NodeBase node, int sourceIndex, int destinationIndex)
+        public virtual void DoMove(Sequence sequence, NodeBase node, int sourceIndex, int destinationIndex, bool withoutGroup)
         {
             if (destinationIndex > sourceIndex)
             {
