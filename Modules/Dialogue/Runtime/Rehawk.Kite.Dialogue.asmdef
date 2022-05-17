@@ -1,0 +1,17 @@
+{
+    "name": "Rehawk.Kite.Dialogue",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d36b6373e6b0c6e4f81ea3802da5e3c1",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

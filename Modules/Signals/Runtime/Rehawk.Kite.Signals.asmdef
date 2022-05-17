@@ -1,0 +1,16 @@
+{
+    "name": "Rehawk.Kite.Signals",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d36b6373e6b0c6e4f81ea3802da5e3c1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
