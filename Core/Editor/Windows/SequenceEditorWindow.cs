@@ -2,10 +2,11 @@
 using Rehawk.Kite.NodeList;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Rehawk.Kite
 {
-    public class SequenceEditorWindow : EditorWindow
+    public class SequenceEditorWindow : EditorWindow, IHasCustomMenu
     {
         private Sequence sequence;
 
@@ -15,12 +16,6 @@ namespace Rehawk.Kite
         private NodeListAdaptor listAdaptor;
 
         private NodeWrapper nodeWrapper;
-        
-        private static string InspectedNodeUid
-        {
-            get { return EditorPrefs.GetString("INSPECTED_NODE_UID"); }
-            set { EditorPrefs.SetString("INSPECTED_NODE_UID", value); }
-        }
         
         private void OnEnable()
         {
@@ -101,6 +96,12 @@ namespace Rehawk.Kite
         {
             if (sequence.TryGetNodeByUid(InspectedNodeUid, out NodeBase node))
             {
+                if (nodeWrapper && forceOpen)
+                {
+                    // Otherwise the property drawer of the node is not reset and some property drawers will not work.
+                    DestroyImmediate(nodeWrapper);
+                }
+                
                 if (nodeWrapper == null)
                 {
                     nodeWrapper = CreateInstance<NodeWrapper>();
@@ -134,7 +135,7 @@ namespace Rehawk.Kite
         private void OnNodeClicked(object sender, ItemClickedEventArgs args)
         {
             InspectedNodeUid = sequence[args.ItemIndex].Uid;
-            
+
             RefreshInspector(true);
         }
 
@@ -160,6 +161,20 @@ namespace Rehawk.Kite
             Repaint();
         }
         
+        void IHasCustomMenu.AddItemsToMenu(GenericMenu menu)
+        {
+            menu.AddItem(new GUIContent("Settings"), false, () =>
+            {
+                SettingsService.OpenProjectSettings("Project/Kite");
+            });
+        }
+        
+        private static string InspectedNodeUid
+        {
+            get { return EditorPrefs.GetString("INSPECTED_NODE_UID"); }
+            set { EditorPrefs.SetString("INSPECTED_NODE_UID", value); }
+        }
+
         [MenuItem("Tools/Kite/Sequence Editor")]
         public static SequenceEditorWindow Open()
         {

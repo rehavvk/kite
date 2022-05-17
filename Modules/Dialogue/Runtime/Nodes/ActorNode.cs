@@ -9,10 +9,11 @@ namespace Rehawk.Kite.Dialogue
     {
         [SerializeField] private ActorAction action;
         
-        [Min(0)]
+        [ActorPosition]
         [SerializeField] private int position;
         [SerializeField] private Actor actor;
-        [SerializeField] private Emotion emotion;
+        [ActorEmotion]
+        [SerializeField] private int emotion;
 
         public override string Summary
         {
@@ -21,41 +22,42 @@ namespace Rehawk.Kite.Dialogue
                 string summary = string.Empty;
 
                 string actorName = actor ? actor.name : string.Empty;
-                string emotionName = emotion.ToString().ToLower();
-                
+                string emotionName = KiteDialogueSettings.GetEmotionName(emotion);
+                string positionName = KiteDialogueSettings.GetPositionName(position);
+
                 switch (action)
                 {
                     case ActorAction.Join:
                         summary += $"<b>{actorName}</b> joins";
 
-                        if (emotion != Emotion.Default)
+                        if (emotionName.ToLower() != "default")
                         {
                             summary += $" <b>{emotionName}</b>";
                         }
                         
-                        summary += $" at position <b>{position}</b>";
+                        summary += $" at position <b>{positionName}</b>";
 
                         break;
                     case ActorAction.Update:
                         summary += $"<b>{actorName}</b> changes";
 
-                        if (emotion != Emotion.Default)
+                        if (emotionName.ToLower() != "default")
                         {
                             summary += $" to <b>{emotionName}</b>";
                         }
                         
-                        summary += $" at position <b>{position}</b>";
+                        summary += $" at position <b>{positionName}</b>";
 
                         break;
                     case ActorAction.Leave:
                         summary += $"<b>{actorName}</b> leaves";
 
-                        if (emotion != Emotion.Default)
+                        if (emotionName.ToLower() != "default")
                         {
                             summary += $" <b>{emotionName}</b>";
                         }
                         
-                        summary += $" position <b>{position}</b>";
+                        summary += $" position <b>{positionName}</b>";
                         
                         break;
                     default:

@@ -8,7 +8,7 @@ namespace Rehawk.Kite
     public class NodeWrapperEditor : Editor
     {
         private Vector2 scrollPosition;
-
+        
         protected override void OnHeaderGUI()
         {
             var wrapper = (NodeWrapper)target;
