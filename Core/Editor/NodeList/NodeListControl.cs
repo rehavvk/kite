@@ -561,9 +561,9 @@ namespace Rehawk.Kite.NodeList
                     menu.AddItem(CommandMoveToBottom, false, DefaultContextHandler, CommandMoveToBottom);
                 }
 
-                menu.AddSeparator("");
-
-                menu.AddItem(CommandClearAll, false, DefaultContextHandler, CommandClearAll);
+                // menu.AddSeparator("");
+                //
+                // menu.AddItem(CommandClearAll, false, DefaultContextHandler, CommandClearAll);
             }
         }
 

@@ -167,6 +167,11 @@ namespace Rehawk.Kite
             {
                 SettingsService.OpenProjectSettings("Project/Kite");
             });
+            
+            menu.AddItem(new GUIContent("Clear Sequence"), false, () =>
+            {
+                listAdaptor.Clear();
+            });
         }
         
         private static string InspectedNodeUid
