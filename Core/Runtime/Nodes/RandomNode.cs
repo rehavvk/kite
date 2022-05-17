@@ -6,9 +6,10 @@ using Random = UnityEngine.Random;
 namespace Rehawk.Kite
 {
     [Category("Flow")]
-    [Description("Picks one of it's indented Case nodes based on the set mode.\n\nRandom = Totally random\nOnce = Random but without duplicates until all cases were used.")]
+    [Description("Picks one of it's indented Case nodes based on the set mode.")]
     public class RandomNode : NodeBase, IBreakableNode
     {
+        [Tooltip("Random = Totally random\nOnce = Random but without duplicates until all cases were used.")]
         [SerializeField] private Mode mode;
 
         [HideInInspector] 

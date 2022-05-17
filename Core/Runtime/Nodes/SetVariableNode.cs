@@ -21,7 +21,8 @@ namespace Rehawk.Kite
         [SerializeField] private string stringValue;
         [ShowIf("dataType", DataType.Object)]
         [SerializeReference] private Object objectValue;
-        
+      
+        [Tooltip("If TRUE the value will be saved to the director as well and will be transferred to later flows.")]
         [SerializeField] private bool persistant = true;
 
         public override string Summary

@@ -3,10 +3,11 @@
 namespace Rehawk.Kite
 {
     [Category("Flow")]
-    [Description("Calls the following nodes only once.\n\nIf persistant is set to TRUE also for other flows of this director.")]
+    [Description("Calls the following nodes only once.")]
     [Icon("Once")]
     public class OnceNode : ConditionNodeBase
     {
+        [Tooltip("If TRUE also later flows will remember the state of the once node.")]
         [SerializeField] private bool persistant = true;
 
         public override string Summary

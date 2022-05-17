@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Rehawk.Kite.Dialogue
 {

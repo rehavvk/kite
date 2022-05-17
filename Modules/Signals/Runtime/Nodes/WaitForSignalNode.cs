@@ -4,17 +4,11 @@ using UnityEngine;
 namespace Rehawk.Kite.Signals
 {
     [Category("Signals")]
-    [Description("Waits for the invocation of the set signal when the set mode matches.\n\nDirector = Reacts only when invoked by this director\nSelf = Reacts only when invoked for this flow\nGlobal = Reacts in any case\n\nIf reactToOld is set to TRUE also signals invoked before the node was entered are counting but only once.")]
+    [Description("Waits for the invocation of the set signal when the set mode matches.")]
     [Icon("WaitForSignal")]
     public class WaitForSignalNode : NodeBase
     {
-        public enum Mode
-        {
-            Director,
-            Self,
-            Global
-        }
-
+        [Tooltip("Director = Reacts only when invoked by this director\nSelf = Reacts only when invoked for this flow\n<b>Global</b> = Reacts in any case\n\nIf reactToOld is set to TRUE also signals invoked before the node was entered are counting but only once.")]
         [SerializeField] private Mode mode;
         [SerializeField] private readonly bool reactToOld = false;
         [SerializeField] private Signal signal;
@@ -121,6 +115,13 @@ namespace Rehawk.Kite.Signals
             flow.SetValue(this, "signal_listener", signalListener);
 
             signal.Invoked += signalListener;
+        }
+        
+        public enum Mode
+        {
+            Director,
+            Self,
+            Global
         }
     }
 }
