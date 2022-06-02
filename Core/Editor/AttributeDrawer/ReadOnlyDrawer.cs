@@ -10,7 +10,7 @@ namespace Rehawk.Kite
         {
             EditorGUI.BeginDisabledGroup(true);
             {
-                EditorGUI.PropertyField(position, property, label);
+                EditorGUI.PropertyField(position, property, label, true);
             }
             EditorGUI.EndDisabledGroup();
         }

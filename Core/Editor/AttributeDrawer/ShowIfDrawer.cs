@@ -21,15 +21,15 @@ namespace Rehawk.Kite
         {
             if (Evaluate(property))
             {
-                EditorGUI.PropertyField(position, property, label);
+                EditorGUI.PropertyField(position, property, label, true);
             }
         }
         
-        private bool Evaluate(SerializedProperty property)
+        protected bool Evaluate(SerializedProperty property)
         {
             showIf = attribute as ShowIfAttribute;
 
-            if (showIf != null)
+            if (showIf != null && !string.IsNullOrEmpty(showIf.PropertyName))
             {
                 string path = property.propertyPath.Contains(".") ? System.IO.Path.ChangeExtension(property.propertyPath, showIf.PropertyName) : showIf.PropertyName;
      

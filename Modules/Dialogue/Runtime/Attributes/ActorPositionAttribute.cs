@@ -1,8 +1,8 @@
-﻿using System;
-using UnityEngine;
-
-namespace Rehawk.Kite.Dialogue
+﻿namespace Rehawk.Kite.Dialogue
 {
-    [AttributeUsage(AttributeTargets.Field)]
-    public class ActorPositionAttribute : PropertyAttribute {}
+    public class ActorPositionAttribute : ShowIfAttribute
+    {
+        public ActorPositionAttribute() : base("", null) {}
+        public ActorPositionAttribute(string propertyName, object comparedValue) : base(propertyName, comparedValue) {}
+    }
 }

@@ -17,6 +17,11 @@ namespace Rehawk.Kite.Dialogue
         [HideInInspector]
         [SerializeField] private string beautifiedText;
         
+        public override int LeftMargin
+        {
+            get { return 20; }
+        }
+
         public override string Summary
         {
             get

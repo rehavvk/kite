@@ -1,9 +1,8 @@
-namespace Rehawk.Kite.Dialogue
+﻿namespace Rehawk.Kite.Dialogue
 {
     public enum ActorAction
     {
-        Join,
         Update,
-        Leave
+        Clear
     }
 }

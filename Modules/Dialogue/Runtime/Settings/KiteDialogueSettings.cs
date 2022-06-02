@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Rehawk.Kite.Dialogue
 {
@@ -23,6 +24,8 @@ namespace Rehawk.Kite.Dialogue
             "Contemptuous",
             "Sad"
         };
+
+        [SerializeField] private string[] tagsToRemoveForPreview = Array.Empty<string>();
 
         private static KiteDialogueSettings instance;
         
@@ -57,6 +60,11 @@ namespace Rehawk.Kite.Dialogue
         public static string[] Emotions
         {
             get { return Instance.emotions; }
+        }
+
+        public static string[] TagsToRemoveForPreview
+        {
+            get { return Instance.tagsToRemoveForPreview; }
         }
 
         public static string GetPositionName(int index)

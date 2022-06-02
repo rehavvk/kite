@@ -20,7 +20,7 @@ namespace Rehawk.Kite
         private void OnEnable()
         {
             Undo.undoRedoPerformed += OnUndoRedoPerformed;
-            NodeWrapperEditor.NodeGotDirty += OnInspectedNodeGotDirty;
+            InspectedNodeEvents.NodeGotDirty += OnInspectedNodeGotDirty;
             
             listControl = new NodeListControl();
             listControl.ItemClicked += OnNodeClicked;
@@ -31,7 +31,7 @@ namespace Rehawk.Kite
         private void OnDisable()
         {
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
-            NodeWrapperEditor.NodeGotDirty -= OnInspectedNodeGotDirty;
+            InspectedNodeEvents.NodeGotDirty -= OnInspectedNodeGotDirty;
             
             if (nodeWrapper != null)
             {
@@ -42,7 +42,7 @@ namespace Rehawk.Kite
         private void OnDestroy()
         {
             Undo.undoRedoPerformed -= OnUndoRedoPerformed;
-            NodeWrapperEditor.NodeGotDirty -= OnInspectedNodeGotDirty;
+            InspectedNodeEvents.NodeGotDirty -= OnInspectedNodeGotDirty;
             
             if (nodeWrapper != null)
             {
@@ -72,6 +72,8 @@ namespace Rehawk.Kite
                 scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
                 {
                     listControl.Draw(listAdaptor);
+                    
+                    GUILayout.Space(100);
                 }
                 EditorGUILayout.EndScrollView();
             }
@@ -108,7 +110,8 @@ namespace Rehawk.Kite
                 }
 
                 nodeWrapper.node = (NodeBase) node.Clone();
-
+                InspectedNodeEvents.InvokeNodeChanged(this, node);
+                
                 if (forceOpen)
                 {
                     Selection.activeObject = nodeWrapper;

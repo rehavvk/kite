@@ -14,12 +14,6 @@ namespace Rehawk.Kite
             var wrapper = (NodeWrapper)target;
             NodeBase node = wrapper.node;
             
-            if (previousNode != node)
-            {
-                previousNode = node;
-                NodeChanged?.Invoke(this, node);
-            }
-            
             if (node != null)
             {
                 GUILayout.Box(GetNodeTypeName(node), Styles.InspectorTitle);
@@ -69,24 +63,11 @@ namespace Rehawk.Kite
                 if (EditorGUI.EndChangeCheck())
                 {
                     serializedObject.ApplyModifiedProperties();
-                    NodeGotDirty?.Invoke(this, node);
+                    InspectedNodeEvents.InvokeNodeGotDirty(this, node);
                 }
             }
         }
 
-        private static NodeBase previousNode;
-
-        public static event EventHandler<NodeBase> NodeChanged;
-        public static event EventHandler<NodeBase> NodeGotDirty;
-        
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void OnSubsystemRegistration()
-        {
-            previousNode = null;
-            NodeChanged = default;
-            NodeGotDirty = default;
-        }
-        
         private static string GetNodeTypeName(NodeBase node)
         {
             var nameAttribute = node.GetType().GetAttribute<NameAttribute>(true);

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Rehawk.Kite.Dialogue
 {
@@ -7,13 +6,18 @@ namespace Rehawk.Kite.Dialogue
     [Icon("Actor")]
     public class ActorNode : NodeBase
     {
-        [SerializeField] private ActorAction action;
-        
         [ActorPosition]
         [SerializeField] private int position;
+        [SerializeField] private ActorAction action;
+        [ShowIf("action", ActorAction.Update)]
         [SerializeField] private Actor actor;
-        [ActorEmotion]
+        [ActorEmotion("action", ActorAction.Update)]
         [SerializeField] private int emotion;
+
+        [Space]
+        
+        [TextArea(2, int.MaxValue)] 
+        [SerializeField] private string meta;
 
         public override string Summary
         {
@@ -25,43 +29,22 @@ namespace Rehawk.Kite.Dialogue
                 string emotionName = KiteDialogueSettings.GetEmotionName(emotion);
                 string positionName = KiteDialogueSettings.GetPositionName(position);
 
-                switch (action)
+                summary += $"<b>{positionName}</b>";
+                
+                if (action == ActorAction.Clear)
                 {
-                    case ActorAction.Join:
-                        summary += $"<b>{actorName}</b> joins";
-
-                        if (emotionName.ToLower() != "default")
-                        {
-                            summary += $" <b>{emotionName}</b>";
-                        }
+                    summary += $" is cleared";
+                }
+                else
+                {
+                    summary += $" is changed to";
                         
-                        summary += $" at position <b>{positionName}</b>";
-
-                        break;
-                    case ActorAction.Update:
-                        summary += $"<b>{actorName}</b> changes";
-
-                        if (emotionName.ToLower() != "default")
-                        {
-                            summary += $" to <b>{emotionName}</b>";
-                        }
+                    if (emotionName.ToLower() != "default")
+                    {
+                        summary += $" <b>{emotionName}</b>";
+                    }
                         
-                        summary += $" at position <b>{positionName}</b>";
-
-                        break;
-                    case ActorAction.Leave:
-                        summary += $"<b>{actorName}</b> leaves";
-
-                        if (emotionName.ToLower() != "default")
-                        {
-                            summary += $" <b>{emotionName}</b>";
-                        }
-                        
-                        summary += $" position <b>{positionName}</b>";
-                        
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    summary += $" <b>{actorName}</b>";
                 }
 
                 return summary;
@@ -80,10 +63,10 @@ namespace Rehawk.Kite.Dialogue
                 dialogueDirector.DoActorAction(new ActorArgs
                 {
                     Id = Uid,
-                    Action = action,
-                    Actor = actor,
-                    Emotion = emotion,
                     Position = position,
+                    Emotion = emotion,
+                    Actor = actor,
+                    Meta = meta,
                     ContinueCallback = () =>
                     {
                         Continue(flow);

@@ -378,5 +378,20 @@ namespace Rehawk.Kite
             
             return input;
         }
+        
+        public static string RemoveSpecificTags(string input, string[] tags)
+        {
+            if (!string.IsNullOrEmpty(input))
+            {
+                for (int i = 0; i < tags.Length; i++)
+                {
+                    input = Regex.Replace(input, "<" + tags[i] + "[^>]*>", string.Empty);
+                    input = Regex.Replace(input, "</" + tags[i] + "[^>]*>", string.Empty);
+                    input = Regex.Replace(input, "{" + tags[i] + "[^}]*}", string.Empty);
+                }
+            }
+            
+            return input;
+        }
     }
 }

@@ -22,10 +22,10 @@ namespace Rehawk.Kite.Dialogue
     public class ActorArgs
     {
         public string Id { get; set; }
-        public ActorAction Action { get; set; }
-        public Actor Actor { get; set; }
-        public int Emotion { get; set; }
         public int Position { get; set; }
+        public int Emotion { get; set; }
+        public Actor Actor { get; set; }
+        public string Meta { get; set; }
         
         public Action ContinueCallback { get; set; }
     }

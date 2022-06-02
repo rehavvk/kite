@@ -1,8 +1,8 @@
-﻿using System;
-using UnityEngine;
-
-namespace Rehawk.Kite.Dialogue
+﻿namespace Rehawk.Kite.Dialogue
 {
-    [AttributeUsage(AttributeTargets.Field)]
-    public class ActorEmotionAttribute : PropertyAttribute {}
+    public class ActorEmotionAttribute : ShowIfAttribute
+    {
+        public ActorEmotionAttribute() : base("", null) {}
+        public ActorEmotionAttribute(string propertyName, object comparedValue) : base(propertyName, comparedValue) {}
+    }
 }

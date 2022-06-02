@@ -9,8 +9,8 @@ namespace Rehawk.Kite.Dialogue
     {
         static SayNodePreviewHandler()
         {
-            NodeWrapperEditor.NodeChanged += OnInspectedNodeChanged;
-            NodeWrapperEditor.NodeGotDirty += OnInspectedNodeChanged;
+            InspectedNodeEvents.NodeChanged += OnInspectedNodeChanged;
+            InspectedNodeEvents.NodeGotDirty += OnInspectedNodeChanged;
         }
         
         private static void OnInspectedNodeChanged(object sender, NodeBase node)
@@ -20,7 +20,7 @@ namespace Rehawk.Kite.Dialogue
                 var previewTarget = Object.FindObjectOfType<SayNodePreviewTarget>();
                 if (previewTarget != null)
                 {
-                    previewTarget.SetText(StringUtils.RemoveTags(sayNode.Text));
+                    previewTarget.SetText(StringUtils.RemoveSpecificTags(sayNode.Text, KiteDialogueSettings.TagsToRemoveForPreview));
                 }
                 else
                 {

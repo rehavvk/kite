@@ -42,7 +42,7 @@ namespace Rehawk.Kite.Dialogue
 
         void IDialogueHandler.DoActorAction(DialogueDirector director, ActorArgs args)
         {
-            Debug.Log($"ACTOR\n\n{args.Position} {args.Action} {args.Emotion} {args.Actor.name}");
+            Debug.Log($"ACTOR\n\n{args.Position} {args.Emotion} {args.Actor.name}");
             director.Continue();
         }
 
