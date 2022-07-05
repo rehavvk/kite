@@ -20,6 +20,8 @@ namespace Rehawk.Kite.Dialogue
                     EditorGUILayout.PropertyField(settings.FindProperty("positions"), new GUIContent("Positions"));
                     EditorGUILayout.PropertyField(settings.FindProperty("emotions"), new GUIContent("Emotions"));
                     EditorGUILayout.PropertyField(settings.FindProperty("tagsToRemoveForPreview"), new GUIContent("Tags To Remove For Preview"));
+                    
+                    settings.ApplyModifiedPropertiesWithoutUndo();
                 },
 
                 keywords = new HashSet<string>(new[] { "Positions", "Emotions", "Tags" })
