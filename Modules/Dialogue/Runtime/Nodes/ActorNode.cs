@@ -28,7 +28,7 @@ namespace Rehawk.Kite.Dialogue
             {
                 string summary = string.Empty;
 
-                string actorName = actor != null ? actor.Name : string.Empty;
+                string actorName = actor != null ? actor.name : string.Empty;
                 string emotionName = KiteDialogueSettings.GetEmotionName(emotion);
                 string positionName = KiteDialogueSettings.GetPositionName(position);
 
