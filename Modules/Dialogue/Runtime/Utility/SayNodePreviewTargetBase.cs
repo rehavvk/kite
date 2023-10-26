@@ -4,6 +4,6 @@ namespace Rehawk.Kite.Dialogue
 {
     public abstract class SayNodePreviewTargetBase : MonoBehaviour
     {
-        public abstract void DoTextLine(string text, IActor speaker);
+        public abstract void DoTextLine(string text, ActorBase speaker);
     }
 }

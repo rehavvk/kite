@@ -2,9 +2,10 @@
     "name": "Rehawk.Kite.Dialogue.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:d36b6373e6b0c6e4f81ea3802da5e3c1",
-        "GUID:e0af6fe0d58086e49abfdbb23899c358",
-        "GUID:c9a6ed518ea8f0b448214dca3f060a6c"
+        "GUID:9eaf9e587685caa49ae974926a4d72e0",
+        "GUID:b2f171b76bce853489c77d6cedbb2f3b",
+        "GUID:7357da9ce18d31d4a81b0f2b6714c2c0",
+        "GUID:49b49c76ee64f6b41bf28ef951cb0e50"
     ],
     "includePlatforms": [
         "Editor"

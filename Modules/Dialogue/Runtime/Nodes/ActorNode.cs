@@ -11,8 +11,8 @@ namespace Rehawk.Kite.Dialogue
 
         [SerializeField] private ActorAction action;
 
-        [SubclassSelector, ShowIf("action", ActorAction.Update)]
-        [SerializeReference] private IActor actor;
+        [ShowIf("action", ActorAction.Update)]
+        [SerializeField] private ActorBase actor;
         
         [ActorEmotion("action", ActorAction.Update)]
         [SerializeField] private int emotion;

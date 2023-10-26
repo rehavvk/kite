@@ -36,12 +36,12 @@ namespace Rehawk.Kite.Dialogue
                 beautifiedText = Regex.Replace(beautifiedText, "{[^}]*}", string.Empty);
             }
             
-            Debug.Log($"SAY\n\n{args.Speaker.Name}:\n{beautifiedText}");
+            Debug.Log($"SAY\n\n{args.Speaker.name}:\n{beautifiedText}");
         }
 
         void IDialogueHandler.DoActorAction(DialogueDirector director, ActorArgs args)
         {
-            Debug.Log($"ACTOR\n\n{args.Position} {args.Emotion} {args.Actor.Name}");
+            Debug.Log($"ACTOR\n\n{args.Position} {args.Emotion} {args.Actor.name}");
             director.Continue();
         }
 

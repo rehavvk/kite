@@ -2,8 +2,8 @@
     "name": "Rehawk.Kite.Dialogue",
     "rootNamespace": "",
     "references": [
-        "GUID:d36b6373e6b0c6e4f81ea3802da5e3c1",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:9eaf9e587685caa49ae974926a4d72e0",
         "GUID:49b49c76ee64f6b41bf28ef951cb0e50"
     ],
     "includePlatforms": [],
