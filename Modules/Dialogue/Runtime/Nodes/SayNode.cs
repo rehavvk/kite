@@ -29,9 +29,9 @@ namespace Rehawk.Kite.Dialogue
             {
                 string summary = string.Empty;
 
-                if (speaker)
+                if (speaker != null)
                 {
-                    summary += $"<b>{speaker.name}</b>\n";
+                    summary += $"<b>{speaker.Name}</b>\n";
                 }
 
                 summary += beautifiedText;
