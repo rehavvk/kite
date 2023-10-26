@@ -12,7 +12,7 @@ namespace Rehawk.Kite.Dialogue
     public class TextLineArgs
     {
         public string Id { get; set; }
-        public Actor Speaker { get; set; }
+        public ActorBase Speaker { get; set; }
         public string Text { get; set; }
         public string Meta { get; set; }
         
@@ -24,7 +24,7 @@ namespace Rehawk.Kite.Dialogue
         public string Id { get; set; }
         public int Position { get; set; }
         public int Emotion { get; set; }
-        public Actor Actor { get; set; }
+        public ActorBase Actor { get; set; }
         public string Meta { get; set; }
         
         public Action ContinueCallback { get; set; }

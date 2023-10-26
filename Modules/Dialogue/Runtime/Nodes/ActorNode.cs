@@ -10,7 +10,7 @@ namespace Rehawk.Kite.Dialogue
         [SerializeField] private int position;
         [SerializeField] private ActorAction action;
         [ShowIf("action", ActorAction.Update)]
-        [SerializeField] private Actor actor;
+        [SerializeField] private ActorBase actor;
         [ActorEmotion("action", ActorAction.Update)]
         [SerializeField] private int emotion;
 
