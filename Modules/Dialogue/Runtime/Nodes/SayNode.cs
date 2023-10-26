@@ -6,7 +6,8 @@ namespace Rehawk.Kite.Dialogue
     [Icon("Say")]
     public class SayNode : NodeBase
     {
-        [SerializeField] private ActorBase speaker;
+        [AddTypeMenu]
+        [SerializeReference] private IActor speaker;
 
         [TextArea(10, int.MaxValue)]
         [SerializeField] private string text;

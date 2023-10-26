@@ -23,7 +23,7 @@ namespace Rehawk.Kite.Dialogue
         /// </summary>
         public string Uid { get; set; }
         
-        public ActorBase Speaker { get; set; }
+        public IActor Speaker { get; set; }
         public string Text { get; set; }
         public string Meta { get; set; }
     }
@@ -38,7 +38,7 @@ namespace Rehawk.Kite.Dialogue
         public int Position { get; set; }
         public ActorAction Action { get; set; }
         public int Emotion { get; set; }
-        public ActorBase Actor { get; set; }
+        public IActor Actor { get; set; }
         public string Meta { get; set; }
         
         public Action ContinueCallback { get; set; }
@@ -54,7 +54,7 @@ namespace Rehawk.Kite.Dialogue
         public int Position { get; set; }
         public ActorAction Action { get; set; }
         public int Emotion { get; set; }
-        public ActorBase Actor { get; set; }
+        public IActor Actor { get; set; }
         public string Meta { get; set; }
     }
 }
