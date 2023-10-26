@@ -30,7 +30,7 @@ namespace Rehawk.Kite.Dialogue
 
                 if (speaker != null)
                 {
-                    summary += $"<b>{speaker.Name}</b>\n";
+                    summary += $"<b>{speaker.name}</b>\n";
                 }
 
                 summary += beautifiedText;
@@ -44,7 +44,7 @@ namespace Rehawk.Kite.Dialogue
             get { return new Color32(121, 173, 84, 255); }
         }
 
-        public IActor Speaker
+        public ActorBase Speaker
         {
             get { return speaker; }
         }
