@@ -8,9 +8,12 @@ namespace Rehawk.Kite.Dialogue
     {
         [ActorPosition]
         [SerializeField] private int position;
+
         [SerializeField] private ActorAction action;
-        [AddTypeMenu, ShowIf("action", ActorAction.Update)]
-        [SerializeReference] private ActorBase actor;
+
+        [SubclassSelector, ShowIf("action", ActorAction.Update)]
+        [SerializeReference] private IActor actor;
+        
         [ActorEmotion("action", ActorAction.Update)]
         [SerializeField] private int emotion;
 
@@ -25,7 +28,7 @@ namespace Rehawk.Kite.Dialogue
             {
                 string summary = string.Empty;
 
-                string actorName = actor ? actor.name : string.Empty;
+                string actorName = actor != null ? actor.Name : string.Empty;
                 string emotionName = KiteDialogueSettings.GetEmotionName(emotion);
                 string positionName = KiteDialogueSettings.GetPositionName(position);
 

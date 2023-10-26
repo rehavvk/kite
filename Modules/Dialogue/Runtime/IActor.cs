@@ -2,5 +2,8 @@
 
 namespace Rehawk.Kite.Dialogue
 {
-    public interface IActor { }
+    public interface IActor 
+    { 
+        string Name { get; }
+    }
 }

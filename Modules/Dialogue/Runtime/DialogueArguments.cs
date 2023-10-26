@@ -9,7 +9,7 @@ namespace Rehawk.Kite.Dialogue
         /// </summary>
         public string Uid { get; set; }
         
-        public ActorBase Speaker { get; set; }
+        public IActor Speaker { get; set; }
         public string Text { get; set; }
         public string Meta { get; set; }
         

@@ -6,7 +6,7 @@ namespace Rehawk.Kite.Dialogue
     [Icon("Say")]
     public class SayNode : NodeBase
     {
-        [AddTypeMenu]
+        [SubclassSelector]
         [SerializeReference] private IActor speaker;
 
         [TextArea(10, int.MaxValue)]
@@ -45,7 +45,7 @@ namespace Rehawk.Kite.Dialogue
             get { return new Color32(121, 173, 84, 255); }
         }
 
-        public ActorBase Speaker
+        public IActor Speaker
         {
             get { return speaker; }
         }
