@@ -106,7 +106,7 @@ namespace Rehawk.Kite
             
             if (owner is NodeBase node)
             {
-                return node.Uid;
+                return node.Guid;
             }
 
             return owner.ToString();

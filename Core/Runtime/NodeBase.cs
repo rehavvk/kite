@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Rehawk.Kite
 {
@@ -30,12 +31,13 @@ namespace Rehawk.Kite
         [SerializeField] private int persistantIndex = -1;
 
         [HideInInspector] 
-        [SerializeField] private string uid;
+        [FormerlySerializedAs("uid")]
+        [SerializeField] private string guid;
 
-        public string Uid
+        public string Guid
         {
-            get { return uid; }
-            set { uid = value; }
+            get { return guid; }
+            set { guid = value; }
         }
 
         public int PersistantIndex
@@ -84,6 +86,11 @@ namespace Rehawk.Kite
         public virtual Color Color
         {
             get { return Color.clear; }
+        }
+
+        public virtual Texture2D Icon
+        {
+            get { return null; }
         }
 
         public virtual object Clone()

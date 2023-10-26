@@ -13,13 +13,23 @@ namespace Rehawk.Kite
             return index;
         }
 
-        public override void DoInsert(Sequence sequence, NodeBase node, int index, bool isDuplicate)
+        public override void DoInsert(Sequence sequence, NodeBase node, int index)
         {
-            base.DoInsert(sequence, node, index, isDuplicate);
+            base.DoInsert(sequence, node, index);
             
-            if (!isDuplicate)
+            sequence.Insert(index + 1, Activator.CreateInstance<EndNode>());
+        }
+
+        public override void DoInsertDuplicate(Sequence sequence, NodeBase node, int index, bool withoutGroup)
+        {
+            if (!withoutGroup && sequence.TryGetIndexByType<EndNode>(index, node.IndentLevel, out int endIndex))
             {
-                sequence.Insert(index + 1, Activator.CreateInstance<EndNode>());
+                base.DoInsert(sequence, node, endIndex + 1);
+                DuplicateRange(sequence, index, endIndex, endIndex + 2);
+            }
+            else
+            {
+                base.DoInsertDuplicate(sequence, node, index, withoutGroup);
             }
         }
 
@@ -27,7 +37,7 @@ namespace Rehawk.Kite
         {
             if (withoutGroup)
             {
-                base.DoMove(sequence, node, sourceIndex, destinationIndex, withoutGroup);
+                base.DoMove(sequence, node, sourceIndex, destinationIndex, true);
             }
             else
             {

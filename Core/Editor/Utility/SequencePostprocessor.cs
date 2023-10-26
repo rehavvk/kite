@@ -36,7 +36,7 @@ namespace Rehawk.Kite
                     {
                         for (int i = 0; i < sequence.Count; i++)
                         {
-                            sequence[i].Uid = Guid.NewGuid().ToString();
+                            sequence[i].Guid = Guid.NewGuid().ToString();
                         }
                     }
                 }

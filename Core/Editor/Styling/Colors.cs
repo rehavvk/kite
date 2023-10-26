@@ -14,6 +14,16 @@ namespace Rehawk.Kite
             get { return new Color32(79, 79, 79, 255); }
         }
 
+        public static Color TitleBackground
+        {
+            get { return new Color32(79, 79, 79, 255); }
+        }
+
+        public static Color ContainerBackground
+        {
+            get { return new Color32(79, 79, 79, 255); }
+        }
+
         public static Color NodeTitleFallbackBackground
         {
             get { return new Color32(50, 50, 50, 255); }

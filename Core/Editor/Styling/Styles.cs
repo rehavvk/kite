@@ -18,13 +18,13 @@ namespace Rehawk.Kite
             Title.margin = new RectOffset(5, 5, 5, 0);
             Title.padding = new RectOffset(5, 5, 3, 3);
             Title.alignment = TextAnchor.MiddleLeft;
-            Title.normal.background = TextureResources.GetTexture(Textures.TitleBackground);
+            Title.normal.background = TextureResources.TitleBackground;
             Title.normal.textColor = new Color(0.8f, 0.8f, 0.8f);
 
             Container = new GUIStyle();
             Container.border = new RectOffset(2, 2, 2, 2);
             Container.margin = new RectOffset(5, 5, 5, 5);
-            Container.normal.background = TextureResources.GetTexture(Textures.ContainerBackground);
+            Container.normal.background = TextureResources.ContainerBackground;
 
             NodeBackground = new GUIStyle();
             NodeBackground.normal.background = TextureResources.NodeBackgroundTexture;

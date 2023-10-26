@@ -7,12 +7,14 @@ namespace Rehawk.Kite
     public interface ISequenceDirector
     {
         event EventHandler<SequenceDirectorEventArgs> Started;
+        event EventHandler<SequenceDirectorEventArgs> Stopped;
+        event EventHandler<SequenceDirectorEventArgs> Cancelled;
         event EventHandler<SequenceDirectorEventArgs> Completed;
         
         VariableContainer Variables { get; }
         
-        Coroutine StartCoroutine(IEnumerator routine);
-        void StopCoroutine(Coroutine routine);
+        Coroutine RunCoroutine(IEnumerator routine);
+        void CancelCoroutine(Coroutine routine);
 
         bool TryGetHostObject(out GameObject result);
         

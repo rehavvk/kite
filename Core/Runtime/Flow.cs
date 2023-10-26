@@ -15,6 +15,8 @@ namespace Rehawk.Kite
         private Coroutine loopRoutine;
         private int nextNodeIndex;
 
+        public event EventHandler Cancelled;
+        public event EventHandler Stopped;
         public event EventHandler Completed;
 
         private Flow(ISequenceDirector director, Sequence sequence)
@@ -38,6 +40,8 @@ namespace Rehawk.Kite
 
         public NodeBase PreviousNode { get; private set; }
 
+        public bool IsRunning { get; private set; }
+        
         private void Run()
         {
             if (!initializedSequences.Contains(Sequence))
@@ -55,7 +59,16 @@ namespace Rehawk.Kite
                 Sequence[i].FlowStarted(this);
             }
 
-            loopRoutine = Director.StartCoroutine(Loop(0));
+            IsRunning = true;
+            
+            loopRoutine = Director.RunCoroutine(Loop(0));
+        }
+
+        public void Cancel()
+        {
+            Stop();
+
+            Cancelled?.Invoke(this, EventArgs.Empty);
         }
 
         private void Stop()
@@ -70,8 +83,12 @@ namespace Rehawk.Kite
                 Sequence[i].FlowStopped(this);
             }
 
-            Director.StopCoroutine(loopRoutine);
+            Director.CancelCoroutine(loopRoutine);
             loopRoutine = null;
+            
+            IsRunning = false;
+
+            Stopped?.Invoke(this, EventArgs.Empty);
         }
 
         public void Continue(int nodeIndex)
@@ -88,7 +105,7 @@ namespace Rehawk.Kite
 
         public Coroutine StartCoroutine(object owner, IEnumerator routine)
         {
-            Coroutine coroutine = Director.StartCoroutine(routine);
+            Coroutine coroutine = Director.RunCoroutine(routine);
 
             if (!routinesByOwner.ContainsKey(owner))
             {
@@ -110,11 +127,14 @@ namespace Rehawk.Kite
 
         public void StopCoroutine(object owner, Coroutine routine)
         {
-            Director.StopCoroutine(routine);
-
-            if (routinesByOwner.ContainsKey(owner))
+            if (routine != null)
             {
-                routinesByOwner[owner].Remove(routine);
+                Director.CancelCoroutine(routine);
+
+                if (routinesByOwner.ContainsKey(owner))
+                {
+                    routinesByOwner[owner].Remove(routine);
+                }
             }
         }
 
@@ -130,7 +150,7 @@ namespace Rehawk.Kite
             {
                 foreach (Coroutine coroutine in routinesByOwner[owner])
                 {
-                    Director.StopCoroutine(coroutine);
+                    Director.CancelCoroutine(coroutine);
                 }
 
                 routinesByOwner.Remove(owner);

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -634,7 +633,7 @@ namespace Rehawk.Kite.NodeList
 
         private void MoveItem(NodeListAdaptor adaptor, int sourceIndex, int destIndex)
         {
-            adaptor.Move(sourceIndex, destIndex, Event.current.modifiers == EventModifiers.Alt);
+            adaptor.Move(sourceIndex, destIndex, Event.current.modifiers == EventModifiers.Control);
 
             int newIndex = destIndex;
             if (newIndex > sourceIndex)
@@ -662,7 +661,7 @@ namespace Rehawk.Kite.NodeList
 
         private void DuplicateItem(NodeListAdaptor adaptor, int itemIndex)
         {
-            adaptor.Duplicate(itemIndex);
+            adaptor.Duplicate(itemIndex, Event.current.modifiers == EventModifiers.Control);
 
             GUI.changed = true;
             NodeListGUI.IndexOfChangedItem = -1;

@@ -2,28 +2,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Callbacks;
 using UnityEngine;
 
 namespace Rehawk.Kite
 {
-    [CreateAssetMenu(fileName = "Sequence", menuName = "Kite/Sequence", order = 800)]
+    [CreateAssetMenu(menuName = "Kite/Sequence", order = 800)]
     public class Sequence : ScriptableObject, IList<NodeBase>
     {
         [HideInInspector] 
+        [SerializeField] private string guid;
+
+        [HideInInspector] 
         [SerializeReference] private List<NodeBase> nodes = new List<NodeBase>();
 
-        public bool TryGetNodeByUid(string uid, out NodeBase node)
+        public string Guid
         {
-            node = nodes.FirstOrDefault(n => n.Uid == uid);
+            get { return guid; }
+            set { guid = value; }
+        }
+
+        public bool TryGetNodeByGuid(string guid, out NodeBase node)
+        {
+            node = nodes.FirstOrDefault(n => n.Guid == guid);
             return node != null;
         }
 
-        public bool TryGetIndexByUid(string uid, out int index)
+        public bool TryGetIndexByGuid(string guid, out int index)
         {
             index = -1;
             
-            NodeBase node = nodes.FirstOrDefault(n => n.Uid == uid);
+            NodeBase node = nodes.FirstOrDefault(n => n.Guid == guid);
             if (node != null)
             {
                 index = IndexOf(node);

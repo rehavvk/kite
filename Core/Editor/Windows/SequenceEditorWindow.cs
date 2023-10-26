@@ -96,7 +96,7 @@ namespace Rehawk.Kite
 
         private void RefreshInspector(bool forceOpen)
         {
-            if (sequence.TryGetNodeByUid(InspectedNodeUid, out NodeBase node))
+            if (sequence.TryGetNodeByGuid(InspectedNodeUid, out NodeBase node))
             {
                 if (nodeWrapper && forceOpen)
                 {
@@ -137,7 +137,7 @@ namespace Rehawk.Kite
 
         private void OnNodeClicked(object sender, ItemClickedEventArgs args)
         {
-            InspectedNodeUid = sequence[args.ItemIndex].Uid;
+            InspectedNodeUid = sequence[args.ItemIndex].Guid;
 
             RefreshInspector(true);
         }
@@ -149,7 +149,7 @@ namespace Rehawk.Kite
 
         private void OnInspectedNodeGotDirty(object sender, NodeBase node)
         {
-            if (sequence.TryGetIndexByUid(node.Uid, out int index))
+            if (sequence.TryGetIndexByGuid(node.Guid, out int index))
             {
                 Undo.RegisterCompleteObjectUndo(sequence, "Changed Node Properties");
 

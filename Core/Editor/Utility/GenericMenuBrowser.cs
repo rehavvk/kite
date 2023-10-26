@@ -38,13 +38,11 @@ namespace Rehawk.Kite
         ///----------------------------------------------------------------------------------------------
         private GenericMenu boundMenu;
 
-        private Type currentKeyType;
         private Node currentNode;
 
         private readonly string headerTitle;
         private float helpRectRequiredHeight;
         private int hoveringIndex;
-        private MenuItemInfo[] items;
         private int lastHoveringIndex;
         private string lastSearch;
         private List<Node> leafNodes;
@@ -56,11 +54,10 @@ namespace Rehawk.Kite
 
         private bool willRepaint;
 
-        public GenericMenuBrowser(GenericMenu newMenu, string title, Type keyType)
+        public GenericMenuBrowser(GenericMenu newMenu, string title)
         {
             Current = this;
             headerTitle = title;
-            currentKeyType = keyType;
             rootNode = new Node();
             currentNode = rootNode;
             lastHoveringIndex = -1;
@@ -75,9 +72,9 @@ namespace Rehawk.Kite
             return new Vector2(480, Mathf.Max(500 + helpRectRequiredHeight, 500));
         }
 
-        public static void ShowAsync(Vector2 pos, string title, Type keyType, Func<GenericMenu> getMenu)
+        public static void ShowAsync(Vector2 pos, string title, Func<GenericMenu> getMenu)
         {
-            GenericMenuBrowser browser = new GenericMenuBrowser(null, title, keyType);
+            GenericMenuBrowser browser = new GenericMenuBrowser(null, title);
             
             Task.Run(getMenu)
                 .ContinueWith(m => browser.SetMenu(m.Result));
@@ -162,7 +159,6 @@ namespace Rehawk.Kite
                 }
             }
 
-            items = tempItems;
             leafNodes = tempLeafNodes;
             rootNode = tempRoot;
             currentNode = rootNode;
@@ -170,9 +166,9 @@ namespace Rehawk.Kite
 
         public static MenuItemInfo[] GetMenuItems(GenericMenu menu)
         {
-            FieldInfo itemField = typeof(GenericMenu).GetField("menuItems", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo itemField = typeof(GenericMenu).GetField("m_MenuItems", BindingFlags.Instance | BindingFlags.NonPublic);
             
-            ArrayList items = itemField.GetValue(menu) as ArrayList;
+            IList items = itemField.GetValue(menu) as IList;
             
             if (items.Count == 0)
             {

@@ -1,5 +1,4 @@
 ﻿using UnityEditor;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Rehawk.Kite.Dialogue
@@ -17,14 +16,13 @@ namespace Rehawk.Kite.Dialogue
         {
             if (node is SayNode sayNode)
             {
-                var previewTarget = Object.FindObjectOfType<SayNodePreviewTarget>();
-                if (previewTarget != null)
+                SayNodePreviewTargetBase[] previewTargets = Object.FindObjectsOfType<SayNodePreviewTargetBase>();
+
+                string text = StringUtils.RemoveSpecificTags(sayNode.Text, KiteDialogueSettings.TagsToRemoveForPreview);
+                
+                for (int i = 0; i < previewTargets.Length; i++)
                 {
-                    previewTarget.SetText(StringUtils.RemoveSpecificTags(sayNode.Text, KiteDialogueSettings.TagsToRemoveForPreview));
-                }
-                else
-                {
-                    Debug.LogError("No object with SayNodePreviewTarget component found.");
+                    previewTargets[i].DoTextLine(text, sayNode.Speaker);
                 }
             }
         }

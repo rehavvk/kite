@@ -2,11 +2,24 @@
 {
     public class ElseNodeOperationProcessor : NodeOperationProcessor
     {
+        public override void DoInsertDuplicate(Sequence sequence, NodeBase node, int index, bool withoutGroup)
+        {
+            if (!withoutGroup && sequence.TryGetIndexByType<EndNode>(index, node.IndentLevel, out int endIndex))
+            {
+                base.DoInsert(sequence, node, endIndex + 1);
+                DuplicateRange(sequence, index, endIndex, endIndex + 2);
+            }
+            else
+            {
+                base.DoInsertDuplicate(sequence, node, index, withoutGroup);
+            }
+        }
+
         public override void DoMove(Sequence sequence, NodeBase node, int sourceIndex, int destinationIndex, bool withoutGroup)
         {
             if (withoutGroup)
             {
-                base.DoMove(sequence, node, sourceIndex, destinationIndex, withoutGroup);
+                base.DoMove(sequence, node, sourceIndex, destinationIndex, true);
             }
             else
             {

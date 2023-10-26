@@ -40,12 +40,12 @@ namespace Rehawk.Kite
 
             foreach (NodeBase node in sequence.OrderBy(n => n.PersistantIndex))
             {
-                if (string.IsNullOrEmpty(node.Uid) || uids.Contains(node.Uid))
+                if (string.IsNullOrEmpty(node.Guid) || uids.Contains(node.Guid))
                 {
-                    node.Uid = Guid.NewGuid().ToString();
+                    node.Guid = Guid.NewGuid().ToString();
                 }
 
-                uids.Add(node.Uid);
+                uids.Add(node.Guid);
             }
 
             // Setup index and indent level.

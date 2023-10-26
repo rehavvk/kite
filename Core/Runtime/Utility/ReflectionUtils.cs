@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using UnityEditor;
 
 namespace Rehawk.Kite
 {
@@ -104,7 +103,8 @@ namespace Rehawk.Kite
             return subTypesMap[baseType] = temp.ToArray();
         }
         
-        public static MonoScript MonoScriptFromType(Type targetType) 
+#if UNITY_EDITOR
+        public static UnityEditor.MonoScript MonoScriptFromType(Type targetType) 
         {
             if (targetType == null) 
                 return null;
@@ -117,11 +117,12 @@ namespace Rehawk.Kite
                 typeName = typeName.Substring(0, typeName.IndexOf('`'));
             }
             
-            return AssetDatabase.FindAssets(string.Format("{0} t:MonoScript", typeName))
-                .Select(AssetDatabase.GUIDToAssetPath)
-                .Select(AssetDatabase.LoadAssetAtPath<MonoScript>)
+            return UnityEditor.AssetDatabase.FindAssets(string.Format("{0} t:MonoScript", typeName))
+                .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
+                .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEditor.MonoScript>)
                 .FirstOrDefault(m => m != null && m.GetClass() == targetType);
         }
+#endif    
         
         public static Func<T, TResult> GetFieldGetter<T, TResult>(FieldInfo info)
         {

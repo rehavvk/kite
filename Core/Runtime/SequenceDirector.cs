@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Rehawk.Kite
 {
     public class SequenceDirector : MonoBehaviour, ISequenceDirector
     {
-        [SerializeField] private Sequence sequence;
-        [SerializeField] private InvokeMode invokeMode = InvokeMode.Start;
-        
+        public Sequence sequence;
+        public InvokeMode invokeMode = InvokeMode.Start;
+
         public event EventHandler<SequenceDirectorEventArgs> Started;
+        public event EventHandler<SequenceDirectorEventArgs> Stopped;
+        public event EventHandler<SequenceDirectorEventArgs> Cancelled;
         public event EventHandler<SequenceDirectorEventArgs> Completed;
         
         public VariableContainer Variables { get; private set; }
-
+        
         public Sequence Sequence
         {
             get { return sequence; }
@@ -42,11 +45,13 @@ namespace Rehawk.Kite
             RunSequence(sequence);
         }
 
-        public void RunSequence(Sequence sequence)
+        public Flow RunSequence(Sequence sequence)
         {
             if (sequence)
             {
                 var flow = Flow.Run(this, sequence);
+                flow.Stopped += OnFlowStopped;
+                flow.Cancelled += OnFlowCancelled;
                 flow.Completed += OnFlowCompleted;
             
                 Started?.Invoke(this, new SequenceDirectorEventArgs
@@ -54,10 +59,27 @@ namespace Rehawk.Kite
                     Sequence = sequence,
                     Flow = flow
                 });
+
+                return flow;
             }
             else
             {
                 Debug.LogError("Sequence couldn't be started because it was null.", this);
+            }
+
+            return null;
+        }
+
+        public Coroutine RunCoroutine(IEnumerator routine)
+        {
+            return StartCoroutine(routine);
+        }
+
+        public void CancelCoroutine(Coroutine routine)
+        {
+            if (routine != null)
+            {
+                StopCoroutine(routine);
             }
         }
 
@@ -100,6 +122,28 @@ namespace Rehawk.Kite
             }
         }
         
+        private void OnFlowStopped(object sender, EventArgs e)
+        {
+            var flow = (Flow) sender;
+            
+            Stopped?.Invoke(this, new SequenceDirectorEventArgs
+            {
+                Sequence = flow.Sequence,
+                Flow = flow
+            });
+        }
+
+        private void OnFlowCancelled(object sender, EventArgs e)
+        {
+            var flow = (Flow) sender;
+            
+            Cancelled?.Invoke(this, new SequenceDirectorEventArgs
+            {
+                Sequence = flow.Sequence,
+                Flow = flow
+            });
+        }
+
         private void OnFlowCompleted(object sender, EventArgs e)
         {
             var flow = (Flow) sender;

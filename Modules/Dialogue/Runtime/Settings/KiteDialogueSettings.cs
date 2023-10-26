@@ -25,6 +25,8 @@ namespace Rehawk.Kite.Dialogue
             "Sad"
         };
 
+        [SerializeField] private Texture2D[] emotionIcons;
+
         [SerializeField] private string[] tagsToRemoveForPreview = Array.Empty<string>();
 
         private static KiteDialogueSettings instance;
@@ -62,6 +64,11 @@ namespace Rehawk.Kite.Dialogue
             get { return Instance.emotions; }
         }
 
+        public static Texture2D[] EmotionIcons
+        {
+            get { return Instance.emotionIcons; }
+        }
+
         public static string[] TagsToRemoveForPreview
         {
             get { return Instance.tagsToRemoveForPreview; }
@@ -85,6 +92,16 @@ namespace Rehawk.Kite.Dialogue
             }
 
             return string.Empty;
+        }
+        
+        public static Texture2D GetEmotionIcon(int index)
+        {
+            if (index >= 0 && index < Instance.emotionIcons.Length)
+            {
+                return Instance.emotionIcons[index];
+            }
+
+            return null;
         }
     }
 }

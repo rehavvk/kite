@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Rehawk.Kite
@@ -7,20 +6,18 @@ namespace Rehawk.Kite
     [CustomEditor(typeof(NodeWrapper), true)]
     public class NodeWrapperEditor : Editor
     {
-        private Vector2 scrollPosition;
-        
         protected override void OnHeaderGUI()
         {
-            var wrapper = (NodeWrapper)target;
+            var wrapper = (NodeWrapper) target;
             NodeBase node = wrapper.node;
             
             if (node != null)
             {
                 GUILayout.Box(GetNodeTypeName(node), Styles.InspectorTitle);
-                if (GUILayout.Button(node.Uid, Styles.NodeInspectorUid))
+                if (GUILayout.Button(node.Guid, Styles.NodeInspectorUid))
                 {
-                    GUIUtility.systemCopyBuffer = node.Uid;
-                    Debug.Log($"Copied node uid '{node.Uid}' to clipboard.");
+                    GUIUtility.systemCopyBuffer = node.Guid;
+                    Debug.Log($"Copied node guid '{node.Guid}' to clipboard.");
                 }
 
                 string description = GetNodeTypeDescription(node);
@@ -28,12 +25,14 @@ namespace Rehawk.Kite
                 {
                     EditorGUILayout.HelpBox(description, MessageType.Info, true);
                 }
+                
+                EditorGUILayout.Space(8);
             }
         }
 
         public override void OnInspectorGUI()
         {
-            var wrapper = (NodeWrapper)target;
+            var wrapper = (NodeWrapper) target;
             NodeBase node = wrapper.node;
 
             if (node != null)

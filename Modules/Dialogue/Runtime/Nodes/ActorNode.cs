@@ -56,13 +56,19 @@ namespace Rehawk.Kite.Dialogue
             get { return new Color32(255, 128, 0, 255); }
         }
 
+        public override Texture2D Icon
+        {
+            get { return KiteDialogueSettings.GetEmotionIcon(emotion); }
+        }
+
         protected override void OnEnter(Flow flow)
         {
             if (flow.Director.TryGetHostObject(out GameObject obj) && obj.TryGetComponent(out DialogueDirector dialogueDirector))
             {
-                dialogueDirector.DoActorAction(new ActorArgs
+                dialogueDirector.DoActorAction(new InternalActorArgs
                 {
-                    Id = Uid,
+                    Uid = flow.Sequence.Guid + "_" + Guid,
+                    Action = action,
                     Position = position,
                     Emotion = emotion,
                     Actor = actor,

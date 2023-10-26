@@ -36,58 +36,64 @@ namespace Rehawk.Kite
 
         public void Add()
         {
-            GenericMenuBrowser.ShowAsync(NodeListControl.lastMouseDownPosition, "Add Node", typeof(NodeBase), () =>
+            GenericMenuBrowser.ShowAsync(NodeListControl.lastMouseDownPosition, "Add Node", () =>
             {
                 return GetTypeSelectionMenu(typeof(NodeBase), type =>
                 {
-                    InsertInList((NodeBase) Activator.CreateInstance(type), false);
+                    if (NodeOperationProcessors.TryGet(type, out NodeOperationProcessor processor))
+                    {
+                        var nodeToAdd = (NodeBase) Activator.CreateInstance(type);
+                        
+                        Undo.RegisterCompleteObjectUndo(sequence, "Add Node");
+
+                        processor.DoAdd(sequence, nodeToAdd);
+                        
+                        SequenceValidator.Validate(sequence);
+            
+                        EditorUtility.SetDirty(sequence);
+
+                        Changed?.Invoke(this, EventArgs.Empty);
+                    }
                 });
             });
         }
 
         public void Insert(int index)
         {
-            GenericMenuBrowser.ShowAsync(NodeListControl.lastMouseDownPosition, "Insert Node", typeof(NodeBase), () =>
+            GenericMenuBrowser.ShowAsync(NodeListControl.lastMouseDownPosition, "Insert Node", () =>
             {
                 return GetTypeSelectionMenu(typeof(NodeBase), type =>
                 {
-                    InsertInList((NodeBase) Activator.CreateInstance(type), false, index);
+                    if (NodeOperationProcessors.TryGet(type, out NodeOperationProcessor processor))
+                    {
+                        var nodeToInsert = (NodeBase) Activator.CreateInstance(type);
+                        
+                        Undo.RegisterCompleteObjectUndo(sequence, "Insert Node");
+
+                        processor.DoInsert(sequence, nodeToInsert, index);
+                        
+                        SequenceValidator.Validate(sequence);
+            
+                        EditorUtility.SetDirty(sequence);
+
+                        Changed?.Invoke(this, EventArgs.Empty);
+                    }
                 });
             });
         }
 
-        public void Duplicate(int index)
+        public void Duplicate(int index, bool withoutGroup)
         {
-            InsertInList((NodeBase) sequence[index].Clone(), true, index + 1);
-        }
-
-        private void InsertInList(NodeBase node, bool isDuplicate, int index = -1)
-        {
-            bool hasChanges = false;
+            NodeBase nodeToDuplicate = sequence[index];
             
-            if (index < 0)
+            if (NodeOperationProcessors.TryGet(nodeToDuplicate.GetType(), out NodeOperationProcessor processor))
             {
-                if (NodeOperationProcessors.TryGet(node.GetType(), out NodeOperationProcessor processor))
-                {
-                    Undo.RegisterCompleteObjectUndo(sequence, "Add Node");
+                var duplicatedNode = (NodeBase) sequence[index].Clone();
 
-                    processor.DoAdd(sequence, node);
-                    hasChanges = true;
-                }
-            }
-            else
-            {
-                if (NodeOperationProcessors.TryGet(node.GetType(), out NodeOperationProcessor processor))
-                {
-                    Undo.RegisterCompleteObjectUndo(sequence, "Insert Node");
-
-                    processor.DoInsert(sequence, node, index, isDuplicate);
-                    hasChanges = true;
-                }
-            }
-
-            if (hasChanges)
-            {
+                Undo.RegisterCompleteObjectUndo(sequence, "Duplicate Node");
+                
+                processor.DoInsertDuplicate(sequence, duplicatedNode, index + 1, withoutGroup);
+                
                 SequenceValidator.Validate(sequence);
             
                 EditorUtility.SetDirty(sequence);
@@ -98,13 +104,13 @@ namespace Rehawk.Kite
 
         public void Remove(int index)
         {
-            NodeBase node = sequence[index];
+            NodeBase nodeToRemove = sequence[index];
 
-            if (NodeOperationProcessors.TryGet(node.GetType(), out NodeOperationProcessor processor))
+            if (NodeOperationProcessors.TryGet(nodeToRemove.GetType(), out NodeOperationProcessor processor))
             {
                 Undo.RegisterCompleteObjectUndo(sequence, "Remove Node");
 
-                processor.DoRemove(sequence, node, index);
+                processor.DoRemove(sequence, nodeToRemove, index);
                 
                 SequenceValidator.Validate(sequence);
             
@@ -183,8 +189,13 @@ namespace Rehawk.Kite
                 case EventType.Repaint:
 
                     var titleContent = new GUIContent();
+
+                    Texture2D icon = node.Icon;
+                    if (icon == null)
+                    {
+                        icon = (Texture2D) IconUtils.GetTypeIcon(node.GetType(), false);
+                    }
                     
-                    Texture icon = IconUtils.GetTypeIcon(node.GetType(), false);
                     if (icon != null)
                     {
                         titleContent.image = icon;

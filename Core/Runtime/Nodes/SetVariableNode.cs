@@ -31,7 +31,7 @@ namespace Rehawk.Kite
             {
                 string summary = string.Empty;
 
-                summary += $"VAR ( {key} )";
+                summary += $"'{key}'";
                 
                 switch (@operator)
                 {

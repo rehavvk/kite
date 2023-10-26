@@ -44,6 +44,11 @@ namespace Rehawk.Kite.Dialogue
             get { return new Color32(121, 173, 84, 255); }
         }
 
+        public ActorBase Speaker
+        {
+            get { return speaker; }
+        }
+        
         public string Text
         {
             get { return text; }
@@ -53,9 +58,9 @@ namespace Rehawk.Kite.Dialogue
         {
             if (flow.Director.TryGetHostObject(out GameObject obj) && obj.TryGetComponent(out DialogueDirector dialogueDirector))
             {
-                dialogueDirector.DoTextLine(new TextLineArgs
+                dialogueDirector.DoTextLine(new InternalTextLineArgs
                 {
-                    Id = Uid,
+                    Uid = flow.Sequence.Guid + "_" + Guid,
                     Speaker = speaker,
                     Text = text,
                     Meta = meta,
