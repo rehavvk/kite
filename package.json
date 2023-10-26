@@ -2,7 +2,7 @@
 	"name":"com.rehawk.kite",
 	"version":"0.1.3",
 	"displayName":"Kite",
-	"unity":"2022.0",
+	"unity":"2022.1",
 	"author":{
 		"name":"Frederick Böhke",
 		"email":"frederick@boehke.com",
