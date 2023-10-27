@@ -6,8 +6,9 @@ namespace Rehawk.Kite
 {
     public class SequenceDirector : MonoBehaviour, ISequenceDirector
     {
-        public Sequence sequence;
-        public InvokeMode invokeMode = InvokeMode.Start;
+        [SerializeField] private bool isGlobal;
+        [SerializeField] private Sequence sequence;
+        [SerializeField] private InvokeMode invokeMode = InvokeMode.Start;
 
         public event EventHandler<SequenceDirectorEventArgs> Started;
         public event EventHandler<SequenceDirectorEventArgs> Stopped;
@@ -25,6 +26,11 @@ namespace Rehawk.Kite
         {
             Variables = new VariableContainer();
 
+            if (isGlobal)
+            {
+                Global = this;
+            }
+            
             if (invokeMode == InvokeMode.Awake)
             {
                 RunSequence();
@@ -153,6 +159,23 @@ namespace Rehawk.Kite
                 Sequence = flow.Sequence,
                 Flow = flow
             });
+        }
+
+        private static SequenceDirector global;
+        
+        public static event Action GlobalChanged;
+        
+        public static SequenceDirector Global
+        {
+            get { return global; }
+            private set
+            {
+                if (global != value)
+                {
+                    global = value;
+                    GlobalChanged?.Invoke();
+                }
+            }
         }
 
         public enum InvokeMode
