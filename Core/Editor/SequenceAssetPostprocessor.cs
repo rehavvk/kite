@@ -27,7 +27,7 @@ namespace Rehawk.Kite
                     }
                     else
                     {
-                        Sequence sequenceWithSameGuid = sequences.FirstOrDefault(s => s.Guid == importedSequence.Guid);
+                        Sequence sequenceWithSameGuid = sequences.FirstOrDefault(s => s != importedSequence && s.Guid == importedSequence.Guid);
                         if (sequenceWithSameGuid != null && sequenceWithSameGuid != importedSequence)
                         {
                             var importedCreationTime = File.GetCreationTimeUtc(importedAssets[i]);
