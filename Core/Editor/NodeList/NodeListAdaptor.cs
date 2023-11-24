@@ -1,6 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Rehawk.Kite.NodeList;
+using UnityDropdown.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,49 +37,43 @@ namespace Rehawk.Kite
 
         public void Add()
         {
-            GenericMenuBrowser.ShowAsync(NodeListControl.lastMouseDownPosition, "Add Node", () =>
+            ShowTypeSelectionMenu(typeof(NodeBase), type =>
             {
-                return GetTypeSelectionMenu(typeof(NodeBase), type =>
+                if (NodeOperationProcessors.TryGet(type, out NodeOperationProcessor processor))
                 {
-                    if (NodeOperationProcessors.TryGet(type, out NodeOperationProcessor processor))
-                    {
-                        var nodeToAdd = (NodeBase) Activator.CreateInstance(type);
+                    var nodeToAdd = (NodeBase) Activator.CreateInstance(type);
                         
-                        Undo.RegisterCompleteObjectUndo(sequence, "Add Node");
+                    Undo.RegisterCompleteObjectUndo(sequence, "Add Node");
 
-                        processor.DoAdd(sequence, nodeToAdd);
+                    processor.DoAdd(sequence, nodeToAdd);
                         
-                        SequenceValidator.Validate(sequence);
+                    SequenceValidator.Validate(sequence);
             
-                        EditorUtility.SetDirty(sequence);
+                    EditorUtility.SetDirty(sequence);
 
-                        Changed?.Invoke(this, EventArgs.Empty);
-                    }
-                });
+                    Changed?.Invoke(this, EventArgs.Empty);
+                }
             });
         }
 
         public void Insert(int index)
         {
-            GenericMenuBrowser.ShowAsync(NodeListControl.lastMouseDownPosition, "Insert Node", () =>
+            ShowTypeSelectionMenu(typeof(NodeBase), type =>
             {
-                return GetTypeSelectionMenu(typeof(NodeBase), type =>
+                if (NodeOperationProcessors.TryGet(type, out NodeOperationProcessor processor))
                 {
-                    if (NodeOperationProcessors.TryGet(type, out NodeOperationProcessor processor))
-                    {
-                        var nodeToInsert = (NodeBase) Activator.CreateInstance(type);
+                    var nodeToInsert = (NodeBase) Activator.CreateInstance(type);
                         
-                        Undo.RegisterCompleteObjectUndo(sequence, "Insert Node");
+                    Undo.RegisterCompleteObjectUndo(sequence, "Insert Node");
 
-                        processor.DoInsert(sequence, nodeToInsert, index);
+                    processor.DoInsert(sequence, nodeToInsert, index);
                         
-                        SequenceValidator.Validate(sequence);
+                    SequenceValidator.Validate(sequence);
             
-                        EditorUtility.SetDirty(sequence);
+                    EditorUtility.SetDirty(sequence);
 
-                        Changed?.Invoke(this, EventArgs.Empty);
-                    }
-                });
+                    Changed?.Invoke(this, EventArgs.Empty);
+                }
             });
         }
 
@@ -265,38 +260,31 @@ namespace Rehawk.Kite
             }
         }
         
-        private static GenericMenu GetTypeSelectionMenu(Type baseType, Action<Type> callback, GenericMenu menu = null, string subCategory = null)
+        private static void ShowTypeSelectionMenu(Type baseType, Action<Type> callback, string subCategory = null)
         {
-            if (menu == null)
-            {
-                menu = new GenericMenu();
-            }
-
             if (subCategory != null)
             {
                 subCategory += "/";
             }
 
-            void Selected(object selectedType)
-            {
-                callback((Type)selectedType);
-            }
-
             var scriptInfos = ScriptInfos.GetScriptInfosOfType(baseType);
 
-            foreach (var info in scriptInfos.Where(info => string.IsNullOrEmpty(info.category)))
+            var dropdownItems = new List<DropdownItem<Type>>();
+
+            foreach (ScriptInfos.ScriptInfo info in scriptInfos.Where(info => string.IsNullOrEmpty(info.category)))
             {
-                menu.AddItem(new GUIContent(subCategory + info.name), false, info.type != null ? (GenericMenu.MenuFunction2)Selected : null, info.type);
+                dropdownItems.Add(new DropdownItem<Type>(info.type, subCategory + info.name));
             }
 
-            foreach (var info in scriptInfos.Where(info => !string.IsNullOrEmpty(info.category)))
+            foreach (ScriptInfos.ScriptInfo info in scriptInfos.Where(info => !string.IsNullOrEmpty(info.category)))
             {
-                menu.AddItem(new GUIContent(subCategory + info.category + "/" + info.name), false, info.type != null ? (GenericMenu.MenuFunction2)Selected : null, info.type);
+                dropdownItems.Add(new DropdownItem<Type>(info.type, subCategory + info.category + "/" + info.name));
             }
 
-            return menu;
+            var dropdownMenu = new DropdownMenu<Type>(dropdownItems, callback);
+            dropdownMenu.ShowAsContext();
         }
-
+        
         #endregion
     }
 }

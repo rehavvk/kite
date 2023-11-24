@@ -2,7 +2,8 @@
     "name": "Rehawk.Kite.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:9eaf9e587685caa49ae974926a4d72e0"
+        "GUID:9eaf9e587685caa49ae974926a4d72e0",
+        "GUID:0046de5c905aeff408e019011d80d21e"
     ],
     "includePlatforms": [
         "Editor"

@@ -15,6 +15,8 @@ namespace Rehawk.Kite.Dialogue
         private bool hasContinued;
         private Action activeContinueCallback;
 
+        private InternalOptionArgs[] activeOptions;
+        
         private ISequenceDirector sequenceDirector;
         
         public event EventHandler Started;
@@ -67,13 +69,30 @@ namespace Rehawk.Kite.Dialogue
             if (activeContinueCallback != null && !hasContinued)
             {
                 hasContinued = true;
+                activeOptions = null;
                 activeContinueCallback.Invoke();
+            }
+        }
+
+        public void Choose(int optionIndex)
+        {
+            if (!IsRunning)
+                return;
+
+            if (activeOptions != null && !hasContinued && 
+                optionIndex >= 0 && optionIndex < activeOptions.Length)
+            {
+                InternalOptionArgs option = activeOptions[optionIndex];
+                activeOptions = null;
+                
+                hasContinued = true;
+                option.ContinueCallback.Invoke();
             }
         }
 
         private void Cancel()
         {
-            
+            // TODO: What should happen?
         }
         
         internal void DoTextLine(InternalTextLineArgs args)
@@ -94,12 +113,56 @@ namespace Rehawk.Kite.Dialogue
                 Uid = args.Uid,
                 Speaker = args.Speaker,
                 Text = args.Text,
+                ContinueModes = args.ContinueModes,
                 Meta = args.Meta,
             };
             
             foreach (IDialogueHandler handler in handlers)
             {
                 handler.DoTextLine(this, publicArgs);
+            }
+        }
+
+        internal void DoChoice(InternalChoiceArgs args)
+        {
+            activeContinueCallback = args.ContinueCallback;
+            activeOptions = args.Options;
+            
+            IsRunning = true;
+            hasContinued = false;
+
+            if (handlers.Count <= 0 || args.Options.Length <= 0)
+            {
+                Continue();
+                return;    
+            }
+            
+            var optionArgs = new OptionArgs[args.Options.Length];
+            for (int i = 0; i < args.Options.Length; i++)
+            {
+                InternalOptionArgs internalArgs = args.Options[i];
+
+                optionArgs[i] = new OptionArgs
+                {
+                    Uid = internalArgs.Uid,
+                    Speaker = internalArgs.Speaker,
+                    Text = internalArgs.Text,
+                    Meta = internalArgs.Meta,
+                };
+            }
+            
+            var publicArgs = new ChoiceArgs
+            {
+                Uid = args.Uid,
+                Options = optionArgs,
+                AutoChoose = args.AutoChoose,
+                AutoChooseOptionIndex = args.AutoChooseOptionIndex,
+                Meta = args.Meta,
+            };
+            
+            foreach (IDialogueHandler handler in handlers)
+            {
+                handler.DoChoice(this, publicArgs);
             }
         }
 
@@ -131,7 +194,7 @@ namespace Rehawk.Kite.Dialogue
                 handler.DoActorAction(this, publicArgs);
             }
         }
-
+        
         public void AddHandler(IDialogueHandler handler)
         {
             if (!handlers.Contains(handler))
@@ -162,6 +225,7 @@ namespace Rehawk.Kite.Dialogue
                 return;
         
             IsRunning = false;
+            activeOptions = null;
             
             foreach (IDialogueHandler handler in handlers)
             {
@@ -177,6 +241,7 @@ namespace Rehawk.Kite.Dialogue
                 return;
             
             IsRunning = false;
+            activeOptions = null;
 
             foreach (IDialogueHandler handler in handlers)
             {

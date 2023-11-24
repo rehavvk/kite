@@ -30,15 +30,5 @@ namespace Rehawk.Kite
         public static readonly Func<Rect> VisibleRect;
 
         public static readonly Action<string> FocusTextInControl;
-
-        private static GUIStyle s_TempStyle = new GUIStyle();
-
-        private static GUIContent s_TempIconContent = new GUIContent();
-        private static readonly int s_IconButtonHint = "_ReorderableIconButton_".GetHashCode();
-
-        public static void Draw(Rect position, GUIStyle style) 
-        {
-            GUI.Box(position, string.Empty, style);
-        }
     }
 }

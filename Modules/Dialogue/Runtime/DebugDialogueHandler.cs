@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Rehawk.Kite.Dialogue
@@ -7,6 +8,9 @@ namespace Rehawk.Kite.Dialogue
     {
         [SerializeField] private DialogueDirector director;
 
+        private bool inChoice;
+        private OptionArgs[] options;
+        
         private void Awake()
         {
             director.AddHandler(this);
@@ -19,9 +23,28 @@ namespace Rehawk.Kite.Dialogue
 
         private void OnGUI()
         {
-            if (director.IsRunning && GUI.Button(new Rect(10, 10, 200, 18), "Continue"))
+            if (director.IsRunning)
             {
-                director.Continue();
+                if (GUI.Button(new Rect(10, 10, 200, 18), "Continue"))
+                {
+                    director.Continue();
+                }
+
+                if (inChoice)
+                {
+                    for (int i = 0; i < options.Length; i++)
+                    {
+                        if (GUI.Button(new Rect(10, 40 + (20 * i), 200, 18), $"Option {i}"))
+                        {
+                            options = null;
+                            inChoice = false;
+                            
+                            director.Choose(i);
+                            
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -39,6 +62,35 @@ namespace Rehawk.Kite.Dialogue
             Debug.Log($"SAY\n\n{args.Speaker.name}:\n{beautifiedText}");
         }
 
+        void IDialogueHandler.DoChoice(DialogueDirector director, ChoiceArgs args)
+        {
+            inChoice = true;
+            options = args.Options;
+            
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.AppendLine("CHOICE:");
+
+            for (int i = 0; i < options.Length; i++)
+            {
+                OptionArgs option = options[i];
+                
+                string beautifiedText = option.Text;
+            
+                if (!string.IsNullOrEmpty(beautifiedText))
+                {
+                    // Removed tags.
+                    beautifiedText = Regex.Replace(beautifiedText, "<[^>]*>", string.Empty);
+                    beautifiedText = Regex.Replace(beautifiedText, "{[^}]*}", string.Empty);
+                }
+
+                stringBuilder.AppendLine($"{i} => {option.Speaker.name}:\n\n{beautifiedText}");
+                stringBuilder.AppendLine();
+            }
+            
+            Debug.Log(stringBuilder.ToString());
+        }
+        
         void IDialogueHandler.DoActorAction(DialogueDirector director, ActorArgs args)
         {
             Debug.Log($"ACTOR\n\n{args.Position} {args.Emotion} {args.Actor.name}");

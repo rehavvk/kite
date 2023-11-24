@@ -10,7 +10,7 @@ namespace Rehawk.Kite.Signals
     {
         [Tooltip("Director = Reacts only when invoked by this director\nSelf = Reacts only when invoked for this flow\n<b>Global</b> = Reacts in any case\n\nIf reactToOld is set to TRUE also signals invoked before the node was entered are counting but only once.")]
         [SerializeField] private Mode mode;
-        [SerializeField] private readonly bool reactToOld = false;
+        [SerializeField] private bool reactToOld = false;
         [SerializeField] private Signal signal;
 
         public override string Summary
@@ -57,7 +57,7 @@ namespace Rehawk.Kite.Signals
         {
             base.OnFlowStopped(flow);
 
-            if (flow.TryGetValue(this, "signal_listener", out EventHandler<SignalEventArgs> signalListener))
+            if (flow.TryGetValue(this, "signal_listener", out Action<Signal, SignalInvokeArgs> signalListener))
             {
                 signal.Invoked -= signalListener;
             }
@@ -85,23 +85,23 @@ namespace Rehawk.Kite.Signals
         private void RegisterListener(Flow flow, bool continueOnSignal)
         {
             // Unregister old listeners first.
-            if (flow.TryGetValue(this, "signal_listener", out EventHandler<SignalEventArgs> signalListener))
+            if (flow.TryGetValue(this, "signal_listener", out Action<Signal, SignalInvokeArgs> signalListener))
             {
                 signal.Invoked -= signalListener;
             }
 
-            signalListener = (sender, e) =>
+            signalListener = (signal, args) =>
             {
                 // This code will be called when the signal is invoked.
 
-                if (mode == Mode.Self && e.Payload is Flow signalFlow && signalFlow == flow ||
-                    mode == Mode.Director && sender is ISequenceDirector signalDirector && signalDirector == flow.Director ||
+                if (mode == Mode.Self && args.Payload is Flow signalFlow && signalFlow == flow ||
+                    mode == Mode.Director && args.Sender is ISequenceDirector signalDirector && signalDirector == flow.Director ||
                     mode == Mode.Global
                 )
                 {
                     flow.SetValue(this, "was_invoked_before", true);
 
-                    EventHandler<SignalEventArgs> signalListenerToUnlisten = flow.GetValue<EventHandler<SignalEventArgs>>(this, "signal_listener");
+                    Action<Signal, SignalInvokeArgs> signalListenerToUnlisten = flow.GetValue<Action<Signal, SignalInvokeArgs>>(this, "signal_listener");
 
                     signal.Invoked -= signalListenerToUnlisten;
 

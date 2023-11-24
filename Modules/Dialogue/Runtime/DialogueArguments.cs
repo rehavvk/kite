@@ -11,6 +11,7 @@ namespace Rehawk.Kite.Dialogue
         
         public ActorBase Speaker { get; set; }
         public string Text { get; set; }
+        public ContinueModes ContinueModes { get; set; }
         public string Meta { get; set; }
         
         public Action ContinueCallback { get; set; }
@@ -25,9 +26,64 @@ namespace Rehawk.Kite.Dialogue
         
         public ActorBase Speaker { get; set; }
         public string Text { get; set; }
+        public ContinueModes ContinueModes { get; set; }
         public string Meta { get; set; }
     }
     
+    internal class InternalChoiceArgs
+    {
+        /// <summary>
+        /// An unique identifier for the operation. Can be used for localization etc.
+        /// </summary>
+        public string Uid { get; set; }
+        
+        public InternalOptionArgs[] Options { get; set; }
+        public bool AutoChoose { get; set; }
+        public int AutoChooseOptionIndex { get; set; }
+        public string Meta { get; set; }
+
+        public Action ContinueCallback { get; set; }
+    }
+    
+    public class ChoiceArgs
+    {
+        /// <summary>
+        /// An unique identifier for the operation. Can be used for localization etc.
+        /// </summary>
+        public string Uid { get; set; }
+        
+        public OptionArgs[] Options { get; set; }
+        public bool AutoChoose { get; set; }
+        public int AutoChooseOptionIndex { get; set; }
+        public string Meta { get; set; }
+    }
+
+    internal class InternalOptionArgs
+    {
+        /// <summary>
+        /// An unique identifier for the operation. Can be used for localization etc.
+        /// </summary>
+        public string Uid { get; set; }
+        
+        public ActorBase Speaker { get; set; }
+        public string Text { get; set; }
+        public string Meta { get; set; }
+
+        public Action ContinueCallback { get; set; }
+    }
+    
+    public class OptionArgs
+    {
+        /// <summary>
+        /// An unique identifier for the operation. Can be used for localization etc.
+        /// </summary>
+        public string Uid { get; set; }
+        
+        public ActorBase Speaker { get; set; }
+        public string Text { get; set; }
+        public string Meta { get; set; }
+    }
+
     internal class InternalActorArgs
     {
         /// <summary>

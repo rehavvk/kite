@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Rehawk.Kite.Dialogue
 {
@@ -10,6 +11,8 @@ namespace Rehawk.Kite.Dialogue
 
         [TextArea(10, int.MaxValue)]
         [SerializeField] private string text;
+
+        [SerializeField] private ContinueModes continueModes = ContinueModes.Manual;
 
         [TextArea(2, int.MaxValue)] 
         [SerializeField] private string meta;
@@ -63,6 +66,7 @@ namespace Rehawk.Kite.Dialogue
                     Uid = flow.Sequence.Guid + "_" + Guid,
                     Speaker = speaker,
                     Text = text,
+                    ContinueModes = continueModes,
                     Meta = meta,
                     ContinueCallback = () =>
                     {
