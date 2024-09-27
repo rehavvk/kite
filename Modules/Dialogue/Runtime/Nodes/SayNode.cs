@@ -20,11 +20,6 @@ namespace Rehawk.Kite.Dialogue
         [HideInInspector]
         [SerializeField] private string beautifiedText;
         
-        public override int LeftMargin
-        {
-            get { return 20; }
-        }
-
         public override string Summary
         {
             get
@@ -76,7 +71,7 @@ namespace Rehawk.Kite.Dialogue
             }
             else
             {
-                flow.Log(LogLevel.Error, "DialogueDirector couldn't be found. Node was skipped.", this);
+                Log(flow, LogLevel.Error, "DialogueDirector couldn't be found. Node was skipped.", this);
                 Continue(flow);
             }
         }

@@ -7,7 +7,7 @@ namespace Rehawk.Kite
 {
     public class Flow
     {
-        private readonly Dictionary<object, List<Coroutine>> routinesByOwner = new Dictionary<object, List<Coroutine>>();
+        private readonly Dictionary<NodeBase, List<Coroutine>> routinesByOwner = new Dictionary<NodeBase, List<Coroutine>>();
         private readonly VariableContainer variables;
         
         private NodeBase activeNode;
@@ -103,85 +103,19 @@ namespace Rehawk.Kite
             Completed?.Invoke(this, EventArgs.Empty);
         }
 
-        public Coroutine StartCoroutine(object owner, IEnumerator routine)
+        public void SetValue<T>(string key, T value, bool persistant = false)
         {
-            Coroutine coroutine = Director.RunCoroutine(routine);
-
-            if (!routinesByOwner.ContainsKey(owner))
-            {
-                routinesByOwner.Add(owner, new List<Coroutine>());
-            }
-
-            routinesByOwner[owner].Add(coroutine);
-
-            return coroutine;
+            SetValueInternal<T>(this, key, value, persistant);
         }
 
-        public Coroutine StartCoroutine(object owner, string key, IEnumerator routine)
+        public T GetValue<T>(string key, T fallback = default)
         {
-            Coroutine coroutine = StartCoroutine(owner, routine);
-            SetValue(owner, key, routine);
-
-            return coroutine;
+            return GetValueInternal<T>(this, key, fallback);
         }
 
-        public void StopCoroutine(object owner, Coroutine routine)
+        public bool TryGetValue<T>(string key, out T result)
         {
-            if (routine != null)
-            {
-                Director.CancelCoroutine(routine);
-
-                if (routinesByOwner.ContainsKey(owner))
-                {
-                    routinesByOwner[owner].Remove(routine);
-                }
-            }
-        }
-
-        public void StopCoroutine(object owner, string key)
-        {
-            Coroutine routine = GetValue<Coroutine>(owner, key);
-            StopCoroutine(owner, routine);
-        }
-
-        public void StopAllCoroutines(object owner)
-        {
-            if (routinesByOwner.ContainsKey(owner))
-            {
-                foreach (Coroutine coroutine in routinesByOwner[owner])
-                {
-                    Director.CancelCoroutine(coroutine);
-                }
-
-                routinesByOwner.Remove(owner);
-            }
-        }
-
-        public void SetValue<T>(object owner, string key, T value, bool persistant = false)
-        {
-            variables.SetValue<T>(owner, key, value);
-
-            if (persistant)
-            {
-                Director.SetValue(owner, key, value);
-            }
-        }
-
-        public T GetValue<T>(object owner, string key, T fallback = default)
-        {
-            return variables.GetValue<T>(owner, key, fallback);
-        }
-
-        public bool TryGetValue<T>(object owner, string key, out T result)
-        {
-            return variables.TryGetValue<T>(owner, key, out result);
-        }
-
-        public void Log(LogLevel level, string message, NodeBase node)
-        {
-            int originIndex = Sequence.IndexOf(node);
-
-            Director.Log(level, message, originIndex, node);
+            return TryGetValueInternal<T>(this, key, out result);
         }
 
         private IEnumerator Loop(int nodeIndex)
@@ -231,6 +165,87 @@ namespace Rehawk.Kite
             yield return null;
 
             Complete();
+        }
+
+        internal void Log(LogLevel level, string message, NodeBase node)
+        {
+            int originIndex = Sequence.IndexOf(node);
+
+            Director.Log(level, message, originIndex, node);
+        }
+
+        internal void SetValueInternal<T>(object owner, string key, T value, bool persistant = false)
+        {
+            variables.SetValue<T>(owner, key, value);
+
+            if (persistant)
+            {
+                Director.SetValue(owner, key, value);
+            }
+        }
+
+        internal T GetValueInternal<T>(object owner, string key, T fallback = default)
+        {
+            return variables.GetValue<T>(owner, key, fallback);
+        }
+
+        internal bool TryGetValueInternal<T>(object owner, string key, out T result)
+        {
+            return variables.TryGetValue<T>(owner, key, out result);
+        }
+
+        internal Coroutine StartCoroutine(NodeBase ownerNode, IEnumerator routine)
+        {
+            Coroutine coroutine = Director.RunCoroutine(routine);
+
+            if (!routinesByOwner.ContainsKey(ownerNode))
+            {
+                routinesByOwner.Add(ownerNode, new List<Coroutine>());
+            }
+
+            routinesByOwner[ownerNode].Add(coroutine);
+
+            return coroutine;
+        }
+
+        internal Coroutine StartCoroutine(NodeBase ownerNode, string key, IEnumerator routine)
+        {
+            Coroutine coroutine = StartCoroutine(ownerNode, routine);
+            SetValueInternal(ownerNode, key, routine);
+
+            return coroutine;
+        }
+
+        internal void StopCoroutine(NodeBase ownerNode, Coroutine routine)
+        {
+            if (routine != null)
+            {
+                Director.CancelCoroutine(routine);
+
+                if (routinesByOwner.TryGetValue(ownerNode, out List<Coroutine> routines))
+                {
+                    routines.Remove(routine);
+                }
+            }
+        }
+
+        internal void StopCoroutine(NodeBase ownerNode, string key)
+        {
+            Coroutine routine = GetValueInternal<Coroutine>(ownerNode, key);
+            StopCoroutine(ownerNode, routine);
+        }
+
+        internal void StopAllCoroutines(NodeBase ownerNode)
+        {
+            if (routinesByOwner.ContainsKey(ownerNode))
+            {
+                foreach (Coroutine coroutine in routinesByOwner[ownerNode])
+                {
+                    Director.CancelCoroutine(coroutine);
+                }
+
+                routinesByOwner.Remove(ownerNode);
+            }
         }
 
         private static readonly List<Sequence> initializedSequences = new List<Sequence>();

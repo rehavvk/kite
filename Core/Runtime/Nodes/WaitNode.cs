@@ -24,14 +24,14 @@ namespace Rehawk.Kite
         {
             base.OnEnter(flow);
 
-            flow.StartCoroutine(this, "wait_routine", ContinueDelayed(seconds, flow));
+            StartCoroutine(flow, this, "wait_routine", ContinueDelayed(seconds, flow));
         }
 
         protected override void OnInterrupt(Flow flow)
         {
             base.OnInterrupt(flow);
 
-            flow.StopCoroutine(this, "wait_routine");
+            StopCoroutine(flow, this, "wait_routine");
         }
 
         private IEnumerator ContinueDelayed(float delay, Flow flow)

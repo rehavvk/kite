@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -152,7 +154,67 @@ namespace Rehawk.Kite
                 flow.Continue(int.MaxValue);
             }
         }
+        
+        protected void Log(Flow flow, LogLevel level, string message, NodeBase node)
+        {
+            flow.Log(level, message, node);
+        }
+        
+        protected void SetValue<T>(Flow flow, string key, T value, bool persistant = false)
+        {
+            flow.SetValue(key, value, persistant);
+        }
 
+        protected T GetValue<T>(Flow flow, string key, T fallback = default)
+        {
+            return flow.GetValue(key, fallback);
+        }
+
+        protected bool TryGetValue<T>(Flow flow, string key, out T result)
+        {
+            return flow.TryGetValue(key, out result);
+        }
+
+        protected void SetNodeValue<T>(Flow flow, string key, T value, bool persistant = false)
+        {
+            flow.SetValueInternal(this, key, value, persistant);
+        }
+
+        protected T GetNodeValue<T>(Flow flow, string key, T fallback = default)
+        {
+            return flow.GetValueInternal(this, key, fallback);
+        }
+
+        protected bool TryGetNodeValue<T>(Flow flow, string key, out T result)
+        {
+            return flow.TryGetValueInternal(this, key, out result);
+        }
+
+        protected Coroutine StartCoroutine(Flow flow, NodeBase ownerNode, IEnumerator routine)
+        {
+            return flow.StartCoroutine(ownerNode, routine);
+        }
+
+        protected void StartCoroutine(Flow flow, NodeBase ownerNode, string key, IEnumerator routine)
+        {
+            flow.StartCoroutine(ownerNode, key, routine);
+        }
+
+        protected void StopCoroutine(Flow flow, NodeBase ownerNode, Coroutine routine)
+        {
+            flow.StopCoroutine(ownerNode, routine);
+        }
+
+        protected void StopCoroutine(Flow flow, NodeBase ownerNode, string key)
+        {
+            flow.StopCoroutine(ownerNode, key);
+        }
+
+        protected void StopAllCoroutines(Flow flow, NodeBase ownerNode)
+        {
+            flow.StopAllCoroutines(ownerNode);
+        }
+        
         /// <summary>
         ///     Is called when the sequence is used the first time.
         /// </summary>

@@ -101,7 +101,7 @@ namespace Rehawk.Kite
 
         private bool EvaluateBool(Flow flow)
         {
-            bool value = flow.GetValue<bool>(flow.Director, key);
+            bool value = flow.GetValue<bool>(key);
 
             switch (@operator)
             {
@@ -116,7 +116,7 @@ namespace Rehawk.Kite
         
         private bool EvaluateInt(Flow flow)
         {
-            int value = flow.GetValue<int>(flow.Director, key);
+            int value = flow.GetValue<int>(key);
 
             switch (@operator)
             {
@@ -139,7 +139,7 @@ namespace Rehawk.Kite
         
         private bool EvaluateFloat(Flow flow)
         {
-            float value = flow.GetValue<float>(flow.Director, key);
+            float value = flow.GetValue<float>(key);
 
             switch (@operator)
             {
@@ -162,7 +162,7 @@ namespace Rehawk.Kite
         
         private bool EvaluateString(Flow flow)
         {
-            string value = flow.GetValue<string>(flow.Director, key);
+            string value = flow.GetValue<string>(key);
 
             switch (@operator)
             {
@@ -177,7 +177,7 @@ namespace Rehawk.Kite
         
         private bool EvaluateObject(Flow flow)
         {
-            Object value = flow.GetValue<Object>(flow.Director, key);
+            Object value = flow.GetValue<Object>(key);
 
             switch (@operator)
             {

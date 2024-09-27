@@ -24,11 +24,6 @@ namespace Rehawk.Kite.Dialogue
             get { return "OPTION"; }
         }
 
-        public override int LeftMargin
-        {
-            get { return 20; }
-        }
-
         public override string Summary
         {
             get { return beautifiedText; }

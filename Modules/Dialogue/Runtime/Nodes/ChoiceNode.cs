@@ -71,7 +71,7 @@ namespace Rehawk.Kite.Dialogue
             }
             else
             {
-                flow.Log(LogLevel.Error, "DialogueDirector couldn't be found. Node was skipped.", this);
+                Log(flow, LogLevel.Error, "DialogueDirector couldn't be found. Node was skipped.", this);
                 Continue(flow);
             }
         }
@@ -96,12 +96,6 @@ namespace Rehawk.Kite.Dialogue
             }
 
             this.optionIndices = optionIndices.ToArray();
-        }
-        
-        public enum Mode
-        {
-            Random,
-            Once
         }
     }
 }

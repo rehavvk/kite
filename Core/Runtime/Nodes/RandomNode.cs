@@ -53,7 +53,7 @@ namespace Rehawk.Kite
             }
             else if (mode == Mode.Once)
             {
-                if (flow.TryGetValue<List<int>>(this, "available_options", out List<int> options) == false || options.Count <= 0)
+                if (TryGetNodeValue<List<int>>(flow, "available_options", out List<int> options) == false || options.Count <= 0)
                 {
                     options = new List<int>(optionIndices);
                 }
@@ -61,7 +61,7 @@ namespace Rehawk.Kite
                 randomIndex = options[Random.Range(0, options.Count)];
                 options.Remove(randomIndex);
 
-                flow.SetValue(this, "available_options", options, true);
+                SetNodeValue(flow, "available_options", options, true);
             }
 
             ContinueWithIndex(flow, randomIndex);

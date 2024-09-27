@@ -57,7 +57,7 @@ namespace Rehawk.Kite.Signals
         {
             base.OnFlowStopped(flow);
 
-            if (flow.TryGetValue(this, "signal_listener", out Action<Signal, SignalInvokeArgs> signalListener))
+            if (TryGetNodeValue(flow, "signal_listener", out Action<Signal, SignalInvokeArgs> signalListener))
             {
                 signal.Invoked -= signalListener;
             }
@@ -67,12 +67,12 @@ namespace Rehawk.Kite.Signals
         {
             base.OnEnter(flow);
 
-            if (reactToOld && flow.TryGetValue(this, "was_invoked_before", out bool wasInvokedBefore) && wasInvokedBefore)
+            if (reactToOld && TryGetNodeValue(flow, "was_invoked_before", out bool wasInvokedBefore) && wasInvokedBefore)
             {
                 // Continue directly if we listened to old and were invoked before.
 
                 // But reset for next execution.
-                flow.SetValue(this, "was_invoked_before", false);
+                SetNodeValue(flow, "was_invoked_before", false);
 
                 Continue(flow);
             }
@@ -85,7 +85,7 @@ namespace Rehawk.Kite.Signals
         private void RegisterListener(Flow flow, bool continueOnSignal)
         {
             // Unregister old listeners first.
-            if (flow.TryGetValue(this, "signal_listener", out Action<Signal, SignalInvokeArgs> signalListener))
+            if (TryGetNodeValue(flow, "signal_listener", out Action<Signal, SignalInvokeArgs> signalListener))
             {
                 signal.Invoked -= signalListener;
             }
@@ -99,9 +99,9 @@ namespace Rehawk.Kite.Signals
                     mode == Mode.Global
                 )
                 {
-                    flow.SetValue(this, "was_invoked_before", true);
+                    SetNodeValue(flow, "was_invoked_before", true);
 
-                    Action<Signal, SignalInvokeArgs> signalListenerToUnlisten = flow.GetValue<Action<Signal, SignalInvokeArgs>>(this, "signal_listener");
+                    Action<Signal, SignalInvokeArgs> signalListenerToUnlisten = GetNodeValue<Action<Signal, SignalInvokeArgs>>(flow, "signal_listener");
 
                     signal.Invoked -= signalListenerToUnlisten;
 
@@ -112,7 +112,7 @@ namespace Rehawk.Kite.Signals
                 }
             };
 
-            flow.SetValue(this, "signal_listener", signalListener);
+            SetNodeValue(flow, "signal_listener", signalListener);
 
             signal.Invoked += signalListener;
         }

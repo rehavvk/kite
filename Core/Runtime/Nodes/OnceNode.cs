@@ -31,12 +31,12 @@ namespace Rehawk.Kite
         {
             base.OnExit(flow);
 
-            flow.SetValue(this, "was_invoked_before", true, persistant);
+            SetNodeValue(flow, "was_invoked_before", true, persistant);
         }
 
         protected override bool EvaluateCondition(Flow flow)
         {
-            return !flow.TryGetValue(this, "was_invoked_before", out bool wasInvokedBefore) || !wasInvokedBefore;
+            return !TryGetNodeValue(flow, "was_invoked_before", out bool wasInvokedBefore) || !wasInvokedBefore;
         }
     }
 }

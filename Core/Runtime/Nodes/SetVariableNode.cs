@@ -115,7 +115,7 @@ namespace Rehawk.Kite
             switch (@operator)
             {
                 case OperationOperator.Set:
-                    flow.SetValue(flow.Director, key, boolValue, persistant);
+                    flow.SetValue(key, boolValue, persistant);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -124,27 +124,27 @@ namespace Rehawk.Kite
 
         private void HandleInt(Flow flow)
         {
-            int previousValue = flow.GetValue<int>(flow.Director, key);
+            int previousValue = flow.GetValue<int>(key);
             
             switch (@operator)
             {
                 case OperationOperator.Set:
-                    flow.SetValue(flow.Director, key, intValue, persistant);
+                    flow.SetValue(key, intValue, persistant);
                     break;
                 case OperationOperator.Add:
-                    flow.SetValue(flow.Director, key, previousValue + intValue, persistant);
+                    flow.SetValue(key, previousValue + intValue, persistant);
                     break;
                 case OperationOperator.Subtract:
-                    flow.SetValue(flow.Director, key, previousValue - intValue, persistant);
+                    flow.SetValue(key, previousValue - intValue, persistant);
                     break;
                 case OperationOperator.Multiply:
-                    flow.SetValue(flow.Director, key, previousValue * intValue, persistant);
+                    flow.SetValue(key, previousValue * intValue, persistant);
                     break;
                 case OperationOperator.Divide:
-                    flow.SetValue(flow.Director, key, previousValue / intValue, persistant);
+                    flow.SetValue(key, previousValue / intValue, persistant);
                     break;
                 case OperationOperator.Modulo:
-                    flow.SetValue(flow.Director, key, previousValue % intValue, persistant);
+                    flow.SetValue(key, previousValue % intValue, persistant);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -153,27 +153,27 @@ namespace Rehawk.Kite
 
         private void HandleFloat(Flow flow)
         {
-            float previousValue = flow.GetValue<float>(flow.Director, key);
+            float previousValue = flow.GetValue<float>(key);
             
             switch (@operator)
             {
                 case OperationOperator.Set:
-                    flow.SetValue(flow.Director, key, floatValue, persistant);
+                    flow.SetValue(key, floatValue, persistant);
                     break;
                 case OperationOperator.Add:
-                    flow.SetValue(flow.Director, key, previousValue + floatValue, persistant);
+                    flow.SetValue(key, previousValue + floatValue, persistant);
                     break;
                 case OperationOperator.Subtract:
-                    flow.SetValue(flow.Director, key, previousValue - floatValue, persistant);
+                    flow.SetValue(key, previousValue - floatValue, persistant);
                     break;
                 case OperationOperator.Multiply:
-                    flow.SetValue(flow.Director, key, previousValue * floatValue, persistant);
+                    flow.SetValue(key, previousValue * floatValue, persistant);
                     break;
                 case OperationOperator.Divide:
-                    flow.SetValue(flow.Director, key, previousValue / floatValue, persistant);
+                    flow.SetValue(key, previousValue / floatValue, persistant);
                     break;
                 case OperationOperator.Modulo:
-                    flow.SetValue(flow.Director, key, previousValue % floatValue, persistant);
+                    flow.SetValue(key, previousValue % floatValue, persistant);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -185,11 +185,11 @@ namespace Rehawk.Kite
             switch (@operator)
             {
                 case OperationOperator.Set:
-                    flow.SetValue(flow.Director, key, stringValue, persistant);
+                    flow.SetValue(key, stringValue, persistant);
                     break;
                 case OperationOperator.Add:
-                    string previousValue = flow.GetValue<string>(flow.Director, key);
-                    flow.SetValue(flow.Director, key, previousValue + stringValue, persistant);
+                    string previousValue = flow.GetValue<string>(key);
+                    flow.SetValue(key, previousValue + stringValue, persistant);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -201,7 +201,7 @@ namespace Rehawk.Kite
             switch (@operator)
             {
                 case OperationOperator.Set:
-                    flow.SetValue(flow.Director, key, objectValue, persistant);
+                    flow.SetValue(key, objectValue, persistant);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
