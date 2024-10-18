@@ -46,12 +46,11 @@ namespace Rehawk.Kite
             }
         }
 
-        private void OnSubFlowCompleted(object sender, EventArgs e)
+        private void OnSubFlowCompleted(Flow flow)
         {
-            Flow subFlow = (Flow)sender;
-            subFlow.Completed -= OnSubFlowCompleted;
+            flow.Completed -= OnSubFlowCompleted;
 
-            Continue(subFlow.ParentFlow);
+            Continue(flow.ParentFlow);
         }
 
         private enum ContinueMode

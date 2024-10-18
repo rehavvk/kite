@@ -19,10 +19,10 @@ namespace Rehawk.Kite.Dialogue
         
         private ISequenceDirector sequenceDirector;
         
-        public event EventHandler Started;
-        public event EventHandler Stopped;
-        public event EventHandler Cancelled;
-        public event EventHandler Completed;
+        public event Action<DialogueDirector> Started;
+        public event Action<DialogueDirector> Stopped;
+        public event Action<DialogueDirector> Cancelled;
+        public event Action<DialogueDirector> Completed;
 
         public bool IsRunning
         {
@@ -35,7 +35,7 @@ namespace Rehawk.Kite.Dialogue
 
                     if (isRunning)
                     {
-                        Started?.Invoke(this, EventArgs.Empty);
+                        Started?.Invoke(this);
                     }
                 }
             }
@@ -211,15 +211,15 @@ namespace Rehawk.Kite.Dialogue
             }
         }
         
-        private void OnSequenceStopped(object sender, SequenceDirectorEventArgs e)
+        private void OnSequenceStopped(ISequenceDirector director, Flow flow, Sequence sequence)
         {
             if (IsRunning)
                 return;
 
-            Stopped?.Invoke(this, EventArgs.Empty);
+            Stopped?.Invoke(this);
         }
 
-        private void OnSequenceCancelled(object sender, SequenceDirectorEventArgs e)
+        private void OnSequenceCancelled(ISequenceDirector director, Flow flow, Sequence sequence)
         {
             if (!IsRunning)
                 return;
@@ -232,10 +232,10 @@ namespace Rehawk.Kite.Dialogue
                 handler.DoCleanup(this);
             }
         
-            Cancelled?.Invoke(this, EventArgs.Empty);
+            Cancelled?.Invoke(this);
         }
 
-        private void OnSequenceCompleted(object sender, SequenceDirectorEventArgs e)
+        private void OnSequenceCompleted(ISequenceDirector director, Flow flow, Sequence sequence)
         {
             if (!IsRunning)
                 return;
@@ -248,7 +248,7 @@ namespace Rehawk.Kite.Dialogue
                 handler.DoCleanup(this);
             }
             
-            Completed?.Invoke(this, EventArgs.Empty);
+            Completed?.Invoke(this);
         }
 
         private static DialogueDirector global;

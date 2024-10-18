@@ -15,9 +15,9 @@ namespace Rehawk.Kite
         private Coroutine loopRoutine;
         private int nextNodeIndex;
 
-        public event EventHandler Cancelled;
-        public event EventHandler Stopped;
-        public event EventHandler Completed;
+        public event Action<Flow> Cancelled;
+        public event Action<Flow> Stopped;
+        public event Action<Flow> Completed;
 
         private Flow(ISequenceDirector director, Sequence sequence)
         {
@@ -68,7 +68,7 @@ namespace Rehawk.Kite
         {
             Stop();
 
-            Cancelled?.Invoke(this, EventArgs.Empty);
+            Cancelled?.Invoke(this);
         }
 
         private void Stop()
@@ -88,7 +88,7 @@ namespace Rehawk.Kite
             
             IsRunning = false;
 
-            Stopped?.Invoke(this, EventArgs.Empty);
+            Stopped?.Invoke(this);
         }
 
         public void Continue(int nodeIndex)
@@ -100,7 +100,7 @@ namespace Rehawk.Kite
         {
             Stop();
 
-            Completed?.Invoke(this, EventArgs.Empty);
+            Completed?.Invoke(this);
         }
 
         public void SetValue<T>(string key, T value, bool persistant = false)

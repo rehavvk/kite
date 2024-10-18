@@ -4,12 +4,14 @@ using UnityEngine;
 
 namespace Rehawk.Kite
 {
+    public delegate void SequenceEventDelegate(ISequenceDirector director, Flow flow, Sequence sequence);
+
     public interface ISequenceDirector
     {
-        event EventHandler<SequenceDirectorEventArgs> Started;
-        event EventHandler<SequenceDirectorEventArgs> Stopped;
-        event EventHandler<SequenceDirectorEventArgs> Cancelled;
-        event EventHandler<SequenceDirectorEventArgs> Completed;
+        event SequenceEventDelegate Started;
+        event SequenceEventDelegate Stopped;
+        event SequenceEventDelegate Cancelled;
+        event SequenceEventDelegate Completed;
         
         VariableContainer Variables { get; }
         

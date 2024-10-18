@@ -10,10 +10,10 @@ namespace Rehawk.Kite
         [SerializeField] private Sequence sequence;
         [SerializeField] private InvokeMode invokeMode = InvokeMode.Start;
 
-        public event EventHandler<SequenceDirectorEventArgs> Started;
-        public event EventHandler<SequenceDirectorEventArgs> Stopped;
-        public event EventHandler<SequenceDirectorEventArgs> Cancelled;
-        public event EventHandler<SequenceDirectorEventArgs> Completed;
+        public event SequenceEventDelegate Started;
+        public event SequenceEventDelegate Stopped;
+        public event SequenceEventDelegate Cancelled;
+        public event SequenceEventDelegate Completed;
         
         public VariableContainer Variables { get; private set; }
         
@@ -60,11 +60,7 @@ namespace Rehawk.Kite
                 flow.Cancelled += OnFlowCancelled;
                 flow.Completed += OnFlowCompleted;
             
-                Started?.Invoke(this, new SequenceDirectorEventArgs
-                {
-                    Sequence = sequence,
-                    Flow = flow
-                });
+                Started?.Invoke(this, flow, sequence);
 
                 return flow;
             }
@@ -128,37 +124,19 @@ namespace Rehawk.Kite
             }
         }
         
-        private void OnFlowStopped(object sender, EventArgs e)
+        private void OnFlowStopped(Flow flow)
         {
-            var flow = (Flow) sender;
-            
-            Stopped?.Invoke(this, new SequenceDirectorEventArgs
-            {
-                Sequence = flow.Sequence,
-                Flow = flow
-            });
+            Stopped?.Invoke(this, flow, sequence);
         }
 
-        private void OnFlowCancelled(object sender, EventArgs e)
+        private void OnFlowCancelled(Flow flow)
         {
-            var flow = (Flow) sender;
-            
-            Cancelled?.Invoke(this, new SequenceDirectorEventArgs
-            {
-                Sequence = flow.Sequence,
-                Flow = flow
-            });
+            Cancelled?.Invoke(this, flow, sequence);
         }
 
-        private void OnFlowCompleted(object sender, EventArgs e)
+        private void OnFlowCompleted(Flow flow)
         {
-            var flow = (Flow) sender;
-            
-            Completed?.Invoke(this, new SequenceDirectorEventArgs
-            {
-                Sequence = flow.Sequence,
-                Flow = flow
-            });
+            Completed?.Invoke(this, flow, sequence);
         }
 
         private static SequenceDirector global;
