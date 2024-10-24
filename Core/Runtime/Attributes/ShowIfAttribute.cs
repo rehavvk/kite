@@ -4,12 +4,12 @@ namespace Rehawk.Kite
 {
     public class ShowIfAttribute : PropertyAttribute
     {
-        public string PropertyName { get; }
+        public string MemberName { get; }
         public object ComparedValue { get; }
 
-        public ShowIfAttribute(string propertyName, object comparedValue)
+        public ShowIfAttribute(string memberName, object comparedValue)
         {
-            PropertyName = propertyName;
+            MemberName = memberName;
             ComparedValue = comparedValue;
         }
     }

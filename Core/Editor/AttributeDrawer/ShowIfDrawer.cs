@@ -29,9 +29,9 @@ namespace Rehawk.Kite
         {
             showIf = attribute as ShowIfAttribute;
 
-            if (showIf != null && !string.IsNullOrEmpty(showIf.PropertyName))
+            if (showIf != null && !string.IsNullOrEmpty(showIf.MemberName))
             {
-                string path = property.propertyPath.Contains(".") ? System.IO.Path.ChangeExtension(property.propertyPath, showIf.PropertyName) : showIf.PropertyName;
+                string path = property.propertyPath.Contains(".") ? System.IO.Path.ChangeExtension(property.propertyPath, showIf.MemberName) : showIf.MemberName;
      
                 comparedField = property.serializedObject.FindProperty(path);
      

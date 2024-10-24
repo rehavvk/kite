@@ -103,6 +103,24 @@ namespace Rehawk.Kite
             return subTypesMap[baseType] = temp.ToArray();
         }
         
+        public static MethodInfo GetMethod(object target, string methodName)
+        {
+            return target.GetType()
+                         .GetMethod(methodName,
+                                    BindingFlags.Instance | BindingFlags.Static |
+                                    BindingFlags.NonPublic | BindingFlags.Public);
+        }
+
+        public static FieldInfo GetField(object target, string fieldName)
+        {
+            return GetAllFields(target, f => f.Name.Equals(fieldName, StringComparison.InvariantCulture)).FirstOrDefault();
+        }
+
+        public static PropertyInfo GetProperty(object target, string propertyName)
+        {
+            return GetAllProperties(target, p => p.Name.Equals(propertyName, StringComparison.InvariantCulture)).FirstOrDefault();
+        }
+
 #if UNITY_EDITOR
         public static UnityEditor.MonoScript MonoScriptFromType(Type targetType) 
         {
@@ -137,6 +155,58 @@ namespace Rehawk.Kite
 #else
             return (T instance) => { return (TResult)info.GetValue(instance); };
 #endif
+        }
+        
+        private static IEnumerable<FieldInfo> GetAllFields(object target, Func<FieldInfo, bool> predicate)
+        {
+            var types = new List<Type>
+                        {
+                            target.GetType()
+                        };
+
+            while (types.Last().BaseType != null)
+            {
+                types.Add(types.Last().BaseType);
+            }
+
+            for (var i = types.Count - 1; i >= 0; i--)
+            {
+                IEnumerable<FieldInfo> fieldInfos = types[i]
+                                                    .GetFields(BindingFlags.Instance | BindingFlags.Static |
+                                                               BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                                                    .Where(predicate);
+
+                foreach (FieldInfo fieldInfo in fieldInfos)
+                {
+                    yield return fieldInfo;
+                }
+            }
+        }
+
+        private static IEnumerable<PropertyInfo> GetAllProperties(object target, Func<PropertyInfo, bool> predicate)
+        {
+            var types = new List<Type>
+                        {
+                            target.GetType()
+                        };
+
+            while (types.Last().BaseType != null)
+            {
+                types.Add(types.Last().BaseType);
+            }
+
+            for (var i = types.Count - 1; i >= 0; i--)
+            {
+                IEnumerable<PropertyInfo> propertyInfos = types[i]
+                                                          .GetProperties(BindingFlags.Instance | BindingFlags.Static | 
+                                                                         BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                                                          .Where(predicate);
+
+                foreach (PropertyInfo propertyInfo in propertyInfos)
+                {
+                    yield return propertyInfo;
+                }
+            }
         }
     }
 }

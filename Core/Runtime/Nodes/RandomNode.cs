@@ -36,11 +36,6 @@ namespace Rehawk.Kite
             }
         }
 
-        void IBreakableNode.Break(Flow flow)
-        {
-            ContinueOnIndentLevel(flow, IndentLevel);
-        }
-
         protected override void OnEnter(Flow flow)
         {
             base.OnEnter(flow);
@@ -89,6 +84,11 @@ namespace Rehawk.Kite
             this.optionIndices = optionIndices.ToArray();
         }
         
+        void IBreakableNode.Break(Flow flow)
+        {
+            ContinueOnIndentLevel(flow, IndentLevel);
+        }
+
         public enum Mode
         {
             Random,

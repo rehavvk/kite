@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rehawk.Kite.Dialogue
+﻿namespace Rehawk.Kite.Dialogue
 {
     public interface IDialogueHandler
     {

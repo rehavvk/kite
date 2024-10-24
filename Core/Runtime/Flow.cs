@@ -91,16 +91,16 @@ namespace Rehawk.Kite
             Stopped?.Invoke(this);
         }
 
-        public void Continue(int nodeIndex)
-        {
-            nextNodeIndex = nodeIndex;
-        }
-
-        private void Complete()
+        public void Complete()
         {
             Stop();
 
             Completed?.Invoke(this);
+        }
+
+        public void Continue(int nodeIndex)
+        {
+            nextNodeIndex = nodeIndex;
         }
 
         public void SetValue<T>(string key, T value, bool persistant = false)

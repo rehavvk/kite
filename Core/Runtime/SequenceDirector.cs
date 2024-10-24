@@ -8,7 +8,7 @@ namespace Rehawk.Kite
     {
         [SerializeField] private bool isGlobal;
         [SerializeField] private Sequence sequence;
-        [SerializeField] private InvokeMode invokeMode = InvokeMode.Start;
+        [SerializeField] private InvokeMode invokeMode = InvokeMode.OnStart;
 
         public event SequenceEventDelegate Started;
         public event SequenceEventDelegate Stopped;
@@ -30,8 +30,11 @@ namespace Rehawk.Kite
             {
                 Global = this;
             }
-            
-            if (invokeMode == InvokeMode.Awake)
+        }
+
+        private void OnEnable()
+        {
+            if (invokeMode == InvokeMode.OnEnable)
             {
                 RunSequence();
             }
@@ -39,7 +42,7 @@ namespace Rehawk.Kite
 
         private void Start()
         {
-            if (invokeMode == InvokeMode.Start)
+            if (invokeMode == InvokeMode.OnStart)
             {
                 RunSequence();
             }
@@ -158,9 +161,9 @@ namespace Rehawk.Kite
 
         public enum InvokeMode
         {
-            Awake,
-            Start,
-            Custom
+            OnEnable,
+            OnStart,
+            ScriptOnly
         }
     }
 }

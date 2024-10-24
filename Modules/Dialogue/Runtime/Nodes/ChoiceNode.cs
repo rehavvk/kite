@@ -27,47 +27,45 @@ namespace Rehawk.Kite.Dialogue
             get { return "CHOICE"; }
         }
 
-        void IBreakableNode.Break(Flow flow)
-        {
-            ContinueOnIndentLevel(flow, IndentLevel);
-        }
-
         protected override void OnEnter(Flow flow)
         {
             base.OnEnter(flow);
 
             if (flow.Director.TryGetHostObject(out GameObject obj) && obj.TryGetComponent(out DialogueDirector dialogueDirector))
             {
-                var optionArgs = new InternalOptionArgs[optionIndices.Length];
+                var optionArgs = new List<InternalOptionArgs>(optionIndices.Length);
                 for (int i = 0; i < optionIndices.Length; i++)
                 {
                     int index = optionIndices[i];
                     
                     var optionNode = (OptionNode) flow.Sequence[index];
-                    optionArgs[i] = new InternalOptionArgs
+                    if (optionNode.Evaluate(flow))
                     {
-                        Uid = flow.Sequence.Guid + "_" + Guid,
-                        Text = optionNode.Text,
-                        Meta = optionNode.Meta,
-                        ContinueCallback = () =>
-                        {
-                            ContinueWithIndex(flow, index);
-                        }
-                    };
+                        optionArgs.Add(new InternalOptionArgs
+                                       {
+                                           Uid = flow.Sequence.Guid + "_" + Guid,
+                                           Text = optionNode.Text,
+                                           Meta = optionNode.Meta,
+                                           ContinueCallback = () =>
+                                           {
+                                               ContinueWithIndex(flow, index);
+                                           }
+                                       });
+                    }
                 }
                 
                 dialogueDirector.DoChoice(new InternalChoiceArgs
-                {
-                    Uid = flow.Sequence.Guid + "_" + Guid,
-                    Options = optionArgs,
-                    AutoChoose = autoChoose,
-                    AutoChooseOptionIndex = autoChooseOptionIndex,
-                    Meta = meta,
-                    ContinueCallback = () =>
-                    {
-                        Continue(flow);
-                    }
-                });
+                                          {
+                                              Uid = flow.Sequence.Guid + "_" + Guid,
+                                              Options = optionArgs.ToArray(),
+                                              AutoChoose = autoChoose,
+                                              AutoChooseOptionIndex = autoChooseOptionIndex,
+                                              Meta = meta,
+                                              ContinueCallback = () =>
+                                              {
+                                                  Continue(flow);
+                                              }
+                                          });
             }
             else
             {
@@ -96,6 +94,11 @@ namespace Rehawk.Kite.Dialogue
             }
 
             this.optionIndices = optionIndices.ToArray();
+        }
+        
+        void IBreakableNode.Break(Flow flow)
+        {
+            ContinueOnIndentLevel(flow, IndentLevel);
         }
     }
 }

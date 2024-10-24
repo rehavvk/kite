@@ -12,15 +12,15 @@ namespace Rehawk.Kite
         [SerializeField] private ComparisonOperator @operator;
         [SerializeField] private DataType dataType;
 
-        [ShowIf("dataType", DataType.Bool)]
+        [ShowIf("dataType", DataType.Bool), Label("Value")]
         [SerializeField] private bool boolValue;
-        [ShowIf("dataType", DataType.Int)]
+        [ShowIf("dataType", DataType.Int), Label("Value")]
         [SerializeField] private int intValue;
-        [ShowIf("dataType", DataType.Float)]
+        [ShowIf("dataType", DataType.Float), Label("Value")]
         [SerializeField] private float floatValue;
-        [ShowIf("dataType", DataType.String)]
+        [ShowIf("dataType", DataType.String), Label("Value")]
         [SerializeField] private string stringValue;
-        [ShowIf("dataType", DataType.Object)]
+        [ShowIf("dataType", DataType.Object), Label("Value")]
         [SerializeReference] private Object objectValue;
 
         public override string Summary

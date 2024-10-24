@@ -132,6 +132,11 @@ namespace Rehawk.Kite
             OnInterrupt(flow);
         }
 
+        protected void Complete(Flow flow)
+        {
+            flow.Complete();
+        }
+
         protected void Continue(Flow flow)
         {
             flow.Continue(Index + 1);

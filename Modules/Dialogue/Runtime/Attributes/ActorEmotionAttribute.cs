@@ -3,6 +3,6 @@
     public class ActorEmotionAttribute : ShowIfAttribute
     {
         public ActorEmotionAttribute() : base("", null) {}
-        public ActorEmotionAttribute(string propertyName, object comparedValue) : base(propertyName, comparedValue) {}
+        public ActorEmotionAttribute(string memberName, object comparedValue) : base(memberName, comparedValue) {}
     }
 }

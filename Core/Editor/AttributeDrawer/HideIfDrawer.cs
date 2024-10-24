@@ -43,6 +43,8 @@ namespace Rehawk.Kite
      
                 switch (comparedField.type)
                 {
+                    case "int":
+                        return !comparedField.intValue.Equals((int) hideIf.ComparedValue);
                     case "bool":
                         return !comparedField.boolValue.Equals(hideIf.ComparedValue);
                     case "Enum":
